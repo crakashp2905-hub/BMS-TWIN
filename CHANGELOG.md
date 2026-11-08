@@ -4,6 +4,19 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.62.0] - 2026-11-08
+
+Verification — **SocketCAN is now exercised on Linux in CI.**
+
+### Added
+- A `socketcan` CI job on Ubuntu creates a real `vcan0` interface and runs the
+  SocketCAN loopback test with `BMS_REQUIRE_VCAN=1`. A missing interface there is
+  a failure, not a silent skip.
+
+### Changed
+- The SocketCAN loopback test uses two endpoints, since a node does not receive
+  its own frames.
+
 ## [0.61.0] - 2026-11-08
 
 Validation — **the interval correction is now checked out of sample.**
