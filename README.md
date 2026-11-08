@@ -8,7 +8,7 @@ diagnostics, an EV range predictor, and a plain-language interpretability layer 
 reproducible, fully-tested framework where every module is independently usable.
 
 <p>
-  <img alt="version" src="https://img.shields.io/badge/version-0.61.0-blue">
+  <img alt="version" src="https://img.shields.io/badge/version-0.62.0-blue">
   <img alt="CI" src="https://github.com/crakashp2905-hub/battery-management-system-digital-twin/actions/workflows/ci.yml/badge.svg">
   <img alt="coverage" src="https://img.shields.io/badge/coverage-90%25-brightgreen">
   <img alt="tests" src="https://img.shields.io/badge/tests-558%20passing-brightgreen">

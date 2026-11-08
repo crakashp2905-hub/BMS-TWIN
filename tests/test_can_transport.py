@@ -105,13 +105,21 @@ class TestSocketCanTransport:
 
     @pytest.mark.skipif(platform.system() != "Linux", reason="SocketCAN is Linux-only")
     def test_vcan_loopback_when_interface_exists(self):
+        import os
         try:
             tx = SocketCanTransport("vcan0")
         except Exception:
+            # The dedicated SocketCAN CI job sets BMS_REQUIRE_VCAN=1, so a missing
+            # interface there is a failure, not a silent skip.
+            if os.environ.get("BMS_REQUIRE_VCAN"):
+                raise
             pytest.skip("vcan0 is not configured on this host")
+        # Two endpoints, as on the virtual bus: a node does not receive its own frames.
+        rx = SocketCanTransport("vcan0")
         try:
             frame = CANFrame(0x321, bytes(range(8)))
             tx.send(frame)
-            assert tx.recv(timeout=1.0) == frame
+            assert rx.recv(timeout=1.0) == frame
         finally:
             tx.close()
+            rx.close()
