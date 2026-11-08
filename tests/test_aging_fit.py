@@ -92,3 +92,17 @@ class TestFadeModels:
                       cycles=np.array([1.0, 2.0, 3.0]), capacity_Ah=np.array([2.0, 1.9, 1.8]))
         assert c.soh[0] == 1.0
         assert abs(c.soh[-1] - 0.9) < 1e-12
+
+
+class TestNestedCalibration:
+    def test_scale_learned_without_the_held_out_cell_restores_coverage(self):
+        from bms.aging_fit import nested_interval_calibration
+        res = nested_interval_calibration(_curves(), LinearPooledFade)
+        assert res.raw_coverage < 0.90                    # the uncorrected interval is too tight
+        assert 0.85 <= res.nested_coverage <= 1.0         # out-of-sample coverage recovers
+
+    def test_one_scale_per_held_out_cell(self):
+        from bms.aging_fit import nested_interval_calibration
+        res = nested_interval_calibration(_curves(), LinearPooledFade)
+        assert set(res.scales) == {c.cell for c in _curves()}
+        assert all(1.0 < s < 4.0 for s in res.scales.values())
