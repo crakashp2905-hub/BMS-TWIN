@@ -8,16 +8,16 @@ diagnostics, an EV range predictor, and a plain-language interpretability layer 
 reproducible, fully-tested framework where every module is independently usable.
 
 <p>
-  <img alt="version" src="https://img.shields.io/badge/version-0.62.0-blue">
+  <img alt="version" src="https://img.shields.io/badge/version-0.63.0-blue">
   <img alt="CI" src="https://github.com/crakashp2905-hub/battery-management-system-digital-twin/actions/workflows/ci.yml/badge.svg">
   <img alt="coverage" src="https://img.shields.io/badge/coverage-90%25-brightgreen">
-  <img alt="tests" src="https://img.shields.io/badge/tests-558%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-562%20passing-brightgreen">
   <img alt="python" src="https://img.shields.io/badge/python-3.10%E2%80%933.13-blue">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="dashboard" src="https://img.shields.io/badge/dashboard-Streamlit-ff4b4b">
 </p>
 
-> **Status.** ✅ 558/558 unit tests pass • 69 library modules • 7 chemistries • ruff-clean •
+> **Status.** ✅ 562/562 unit tests pass • 69 library modules • 7 chemistries • ruff-clean •
 > CI on Python 3.10–3.13 • Streamlit dashboard + EV range predictor + executed demo notebook.
 
 ---
@@ -87,7 +87,7 @@ reproducible, fully-tested framework where every module is independently usable.
   the box: coulomb-counting hits **0.64% SoC RMSE** on a real B0005 discharge, and real capacity
   fade is recovered across four cells (`scripts/validate_nasa.py`, `docs/validation.md`; a ~20 KB
   real fixture is committed so CI exercises it too).
-- **Reproducible & tested** — every randomness source is seeded; 558 unit tests; pip-installable
+- **Reproducible & tested** — every randomness source is seeded; 562 unit tests; pip-installable
   with GitHub Actions CI (ruff-blocking + 90% coverage gate).
 
 ---
@@ -186,7 +186,7 @@ battery-management-system-digital-twin/
 ├── notebooks/                 # Executed end-to-end demo
 ├── scripts/build_notebook.py  # Reproducible notebook generator
 ├── bms.dbc                    # Shipped Vector DBC (cantools-validated, matches the encoder)
-├── tests/test_bms.py          # 558 unit tests
+├── tests/test_bms.py          # 562 unit tests
 ├── figures/                   # 12 PNGs produced by the notebook
 ├── docs/architecture.md       # Layered-design notes & invariants
 ├── docs/estimation.md         # Which model produces each quantity + SoC benchmark
@@ -394,7 +394,7 @@ the analog front-end (estimator-ranking shift), and thermal-runaway propagation.
 ## Testing
 
 ```bash
-pytest -q                                  # 558 tests, ~30 s
+pytest -q                                  # 562 tests, ~30 s
 pytest --cov=bms --cov-fail-under=85       # coverage gate (CI enforces ≥ 85%; currently 90%)
 ruff check .                               # lint — blocking in CI
 ```

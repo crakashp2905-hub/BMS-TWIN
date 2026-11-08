@@ -4,6 +4,24 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.63.0] - 2026-11-08
+
+Validation — **a second, independent dataset, and a negative transfer result.**
+
+### Added
+- `bms.aging_fit.load_oxford_curves` builds per-cell fade curves from the Oxford
+  Battery Degradation Dataset 1 (eight Kokam 740 mAh cells aged at 40 °C).
+- `scripts/validate_oxford.py`: the literature defaults at 40 °C, leave-one-cell-out
+  within Oxford, and transfer from NASA. The data file is not committed (ODbL).
+- 4 tests, which run only when the Oxford file is present.
+
+### Findings
+- The shipped literature defaults are inconsistent across datasets: about 10 % error
+  on NASA (too little fade) and 49 % on Oxford (too much fade).
+- Within Oxford, fitted models generalise across cells: 2.6 % (linear) and 1.6 %
+  (power law) held-out error.
+- Transfer from NASA to Oxford fails: 678–838 % error. Covariates are needed.
+
 ## [0.62.0] - 2026-11-08
 
 Verification — **SocketCAN is now exercised on Linux in CI.**
