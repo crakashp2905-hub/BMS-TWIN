@@ -280,3 +280,29 @@ def calibration_scale_for(y, mu, sigma, level):
 def coverage_for(y, mu, sigma, level):
     from .uncertainty import coverage
     return coverage(y, mu, sigma, level)
+
+
+# ── Second, independent dataset: Oxford Battery Degradation Dataset 1 ───────
+
+def load_oxford_curves(mat_path: str, temperature_C: float = 40.0,
+                       c_rate: float = 1.0) -> list[FadeCurve]:
+    """Build one :class:`FadeCurve` per Oxford cell from its characterisation tests.
+
+    The Oxford file stores, for each characterisation point, a C/1 discharge whose
+    capacity is recorded in mAh. The readme states the cells were aged at 40 °C under
+    an urban drive cycle. The aging current is not given as a number, so ``c_rate``
+    is an explicit assumption (default 1.0), not a measurement.
+    """
+    import scipy.io as sio
+    m = sio.loadmat(mat_path, simplify_cells=True)
+    curves = []
+    for cell in sorted((k for k in m if k.startswith("Cell")), key=lambda k: int(k[4:])):
+        snaps = m[cell]
+        keys = sorted(snaps.keys(), key=lambda s: int(s[3:]))
+        cycles = np.array([int(k[3:]) for k in keys], float)
+        cap_Ah = np.array([np.nanmax(np.abs(np.asarray(snaps[k]["C1dc"]["q"], float))) for k in keys]) / 1000.0
+        from .signal import hampel
+        cap_clean, mask = hampel(cap_Ah, window=7, n_sigma=3.0)
+        curves.append(FadeCurve(cell=cell, c_rate=float(c_rate), temperature_C=float(temperature_C),
+                                cycles=cycles, capacity_Ah=cap_clean, n_repaired=int(mask.sum())))
+    return curves
