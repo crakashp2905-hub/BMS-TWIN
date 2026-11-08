@@ -24,7 +24,7 @@ Top-level imports for convenient one-liner use::
     )
 """
 
-__version__ = "0.56.0"
+__version__ = "0.57.0"
 
 from .afe import AFE, AFEConfig
 from .agent import (
@@ -52,6 +52,7 @@ from .balancing import (
     SwitchedCapacitorBalancer,
     compare_balancers,
 )
+from .benchmark import BenchmarkResult, GroundTruthCell, run_synthetic_benchmark
 from .calibration import (
     PulseFitResult,
     fit_cell_distribution,
@@ -367,6 +368,7 @@ __all__ = [
     "coverage", "picp", "mpiw", "sharpness", "reliability_curve",
     "expected_calibration_error", "assess_calibration", "CalibrationReport",
     "calibration_scale",
+    "run_synthetic_benchmark", "BenchmarkResult", "GroundTruthCell",
     "ObservabilityEngine", "ObservabilityReport", "analyze_observability",
     "fisher_information", "voltage_sensitivities", "DEFAULT_PARAMS",
     "Experiment", "ExperimentDesign", "ExperimentDesigner", "design_next_experiment",
