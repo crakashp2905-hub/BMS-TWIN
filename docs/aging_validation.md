@@ -117,6 +117,39 @@ What the numbers say:
    that these two datasets cannot yet estimate reliably. This is a negative result,
    and it is the main reason not to claim cross-chemistry or cross-lab accuracy.
 
+### Is the 678–838 % failure a fade-law failure, or extrapolation?
+
+`scripts/validate_throughput_transfer.py` splits the two. It re-indexes every
+cycle axis by equivalent full cycles (cumulative discharge charge over rated
+capacity), which removes the "cycles mean different charge" confound, and it
+scores Oxford both over all points and only over points inside NASA's measured
+range.
+
+| Axis | Scored on | Stress power law RMSE | Linear pooled RMSE |
+|---|---|---|---|
+| Cycles | all Oxford points | 678 % | 838 % |
+| Cycles | Oxford points within NASA range (≤ 167 cycles) | 14.3 % | 14.2 % |
+| EFC | all Oxford points | 944 % | 891 % |
+| EFC | Oxford points within NASA range (≤ 137 EFC) | 16.9 % | 16.9 % |
+
+What this shows:
+
+1. **Most of the 678–838 % is extrapolation.** NASA cells reach about 137 EFC;
+   Oxford cells reach about 7,000 EFC. Both fitted models are carried far beyond
+   their data, and the predicted SoH goes unphysically negative. Converting the
+   axis to throughput does not help (it is worse, 891–944 %), so the cycle-count
+   confound is not the cause.
+2. **The in-range score is not evidence that transfer works.** It is 14–17 %, but
+   it rests on about two characterisation points per Oxford cell (cycles 0 and 100,
+   roughly 0–85 EFC). That is too little data to validate anything. The honest
+   statement is that cross-dataset transfer is **untested beyond the NASA range**,
+   not that it is validated early in life.
+3. **The EFC transform changes no conclusion.** The shipped defaults, the
+   within-Oxford fits and the cross-dataset failure stand as written above.
+
+The cross-dataset claim is therefore left open. Testing it needs cells from a
+second dataset that overlap NASA's EFC range at a different temperature.
+
 ## Limitations
 
 - **Eight cells, two stress levels, mostly 1 C.** The 2 C evidence is 28 cycles
