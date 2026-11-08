@@ -24,7 +24,7 @@ Top-level imports for convenient one-liner use::
     )
 """
 
-__version__ = "0.57.0"
+__version__ = "0.58.0"
 
 from .afe import AFE, AFEConfig
 from .agent import (
@@ -43,6 +43,15 @@ from .agent import (
     twin_tools,
 )
 from .aging import AgingModel, AgingParams, AgingState
+from .aging_fit import (
+    FadeCurve,
+    LinearPooledFade,
+    LiteratureFade,
+    PowerLawFade,
+    leave_one_out,
+    load_fade_csv,
+    load_fade_curve,
+)
 from .autocal import CalibratedCell, auto_calibrate, estimate_capacity
 from .autonomy import AutonomousBatteryTwin, LearningRound
 from .balancing import (
@@ -369,6 +378,8 @@ __all__ = [
     "expected_calibration_error", "assess_calibration", "CalibrationReport",
     "calibration_scale",
     "run_synthetic_benchmark", "BenchmarkResult", "GroundTruthCell",
+    "FadeCurve", "LinearPooledFade", "LiteratureFade", "PowerLawFade",
+    "leave_one_out", "load_fade_csv", "load_fade_curve",
     "ObservabilityEngine", "ObservabilityReport", "analyze_observability",
     "fisher_information", "voltage_sensitivities", "DEFAULT_PARAMS",
     "Experiment", "ExperimentDesign", "ExperimentDesigner", "design_next_experiment",
