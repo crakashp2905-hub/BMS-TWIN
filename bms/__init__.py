@@ -24,7 +24,7 @@ Top-level imports for convenient one-liner use::
     )
 """
 
-__version__ = "0.58.0"
+__version__ = "0.59.0"
 
 from .afe import AFE, AFEConfig
 from .agent import (
@@ -304,6 +304,14 @@ from .uncertainty import (
     sharpness,
 )
 from .unified_twin import UnifiedTwin, UnifiedTwinState
+from .vehicle_dynamics import (
+    DriveResult,
+    MotorInverter,
+    PackModel,
+    Vehicle,
+    drive_to_battery_load,
+    simulate_drive,
+)
 
 __all__ = [
     "__version__",
@@ -378,6 +386,8 @@ __all__ = [
     "expected_calibration_error", "assess_calibration", "CalibrationReport",
     "calibration_scale",
     "run_synthetic_benchmark", "BenchmarkResult", "GroundTruthCell",
+    "Vehicle", "MotorInverter", "PackModel", "DriveResult", "simulate_drive",
+    "drive_to_battery_load",
     "FadeCurve", "LinearPooledFade", "LiteratureFade", "PowerLawFade",
     "leave_one_out", "load_fade_csv", "load_fade_curve",
     "ObservabilityEngine", "ObservabilityReport", "analyze_observability",
