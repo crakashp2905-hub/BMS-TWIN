@@ -82,6 +82,41 @@ Per-cell scales range from about 1.8 to 3.3. B0006 is the hardest cell and drive
 most of that spread. With eight cells, coverage estimates are coarse: a difference
 of one cell moves them by about 0.06, so the figures are indicative, not precise.
 
+## Second dataset: Oxford Battery Degradation Dataset 1
+
+A different cell (Kokam 740 mAh pouch), lab and stress: eight cells aged at 40 °C
+under an urban drive cycle to 5,000–8,200 cycles, with a C/1 characterisation
+every 100 cycles. The aging current is not stated as a number, so the models use
+C = 1 as an explicit assumption. Reproduce with
+`python scripts/validate_oxford.py <path to the .mat file>`.
+
+The data file is **not committed**: the Oxford dataset is licensed under the ODbL,
+whose share-alike terms apply to derived databases. The repository is MIT licensed,
+so the derived capacity table is not published here either. The tests skip when
+the file is absent.
+
+| Test | What it asks | Mean SoH RMSE |
+|---|---|---|
+| A. Shipped literature defaults at 40 °C | Do the defaults hold on another dataset? | **49 %** (predicts far too much fade) |
+| B. Leave-one-cell-out, linear pooled | Do fits generalise across cells within Oxford? | **2.6 %** |
+| B. Leave-one-cell-out, stress power law | Same, power law | **1.6 %** |
+| C. Fit on NASA, predict Oxford | Does a model transfer across datasets? | **678–838 %** (fails) |
+
+What the numbers say:
+
+1. **The shipped defaults are inconsistent across datasets.** On NASA cells at
+   24 °C they predict too little fade (about 10 % error); on Oxford cells at 40 °C
+   they predict too much (about 49 % error). Neither dataset supports the defaults
+   as a general prior.
+2. **Within one dataset, fitting works.** Held-out cells in Oxford are predicted
+   to within 2–3 %. Here the power law beats the linear model, the reverse of NASA,
+   so the best model depends on the data.
+3. **Across datasets, a fit from one dataset does not transfer.** A model fitted
+   on the NASA cells cannot predict the Oxford cells, which cycled 50× as far and
+   ran 16 °C hotter. Transfer needs covariates (temperature, throughput, C-rate)
+   that these two datasets cannot yet estimate reliably. This is a negative result,
+   and it is the main reason not to claim cross-chemistry or cross-lab accuracy.
+
 ## Limitations
 
 - **Eight cells, two stress levels, mostly 1 C.** The 2 C evidence is 28 cycles
