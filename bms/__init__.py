@@ -24,7 +24,7 @@ Top-level imports for convenient one-liner use::
     )
 """
 
-__version__ = "0.59.0"
+__version__ = "0.60.0"
 
 from .afe import AFE, AFEConfig
 from .agent import (
@@ -69,6 +69,13 @@ from .calibration import (
     validation_report,
 )
 from .can import BMSCanBus, CanBusMonitor, CANFDFrame, CANFrame, can_checksum
+from .can_transport import (
+    CanTransport,
+    SocketCanTransport,
+    VirtualCanTransport,
+    consume_telemetry,
+    publish_telemetry,
+)
 from .charge_control import (
     ChargeLimits,
     MPCCharger,
@@ -386,6 +393,8 @@ __all__ = [
     "expected_calibration_error", "assess_calibration", "CalibrationReport",
     "calibration_scale",
     "run_synthetic_benchmark", "BenchmarkResult", "GroundTruthCell",
+    "CanTransport", "VirtualCanTransport", "SocketCanTransport",
+    "publish_telemetry", "consume_telemetry",
     "Vehicle", "MotorInverter", "PackModel", "DriveResult", "simulate_drive",
     "drive_to_battery_load",
     "FadeCurve", "LinearPooledFade", "LiteratureFade", "PowerLawFade",
