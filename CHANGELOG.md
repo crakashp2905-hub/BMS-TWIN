@@ -4,6 +4,26 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.57.0] - 2026-11-08
+
+Validation — **synthetic ground-truth benchmark with ablation** (roadmap Tier 1 #5–#7).
+
+### Added
+- **`bms/benchmark.py`** — `run_synthetic_benchmark(n, method)` draws random
+  cells (3 OCV-distinct chemistries: NMC, LFP, LTO; random R0/R1/R2, aging and
+  starting SoC), hides their true state, gives the estimator only telemetry
+  (current with a realistic 3 % sensor scale error, voltage with noise), and
+  scores reconstruction against the hidden truth. Methods: `coulomb`,
+  `ekf_generic` (NMC OCV, no calibration), `autocal` (auto-calibration then EKF).
+- **Ablation** (12 cells, seed 7): coulomb **0.10 %** SoC RMSE, generic EKF
+  **44 %** (an NMC OCV on flat-plateau LFP/LTO breaks the filter), auto-calibrated
+  EKF **0.67 %** (p90 2.4 %) with **100 %** chemistry identification and 3.6 %
+  mean R0 error. Honest reading: under this sensor bias, coulomb counting is the
+  most accurate; the value of auto-calibration is the 65× improvement over the
+  generic model and correct chemistry identification, not beating coulomb.
+- 5 tests covering the benchmark (the coulomb-drift test asserts a measurable,
+  bounded band, not a magic threshold).
+
 ## [0.56.0] - 2026-09-19
 
 Platform roadmap — **Tier 1, #3: make uncertainty scientifically valid.**
