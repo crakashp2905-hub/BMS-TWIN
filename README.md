@@ -8,16 +8,16 @@ diagnostics, an EV range predictor, and a plain-language interpretability layer 
 reproducible, fully-tested framework where every module is independently usable.
 
 <p>
-  <img alt="version" src="https://img.shields.io/badge/version-0.59.0-blue">
+  <img alt="version" src="https://img.shields.io/badge/version-0.60.0-blue">
   <img alt="CI" src="https://github.com/crakashp2905-hub/battery-management-system-digital-twin/actions/workflows/ci.yml/badge.svg">
   <img alt="coverage" src="https://img.shields.io/badge/coverage-90%25-brightgreen">
-  <img alt="tests" src="https://img.shields.io/badge/tests-548%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-556%20passing-brightgreen">
   <img alt="python" src="https://img.shields.io/badge/python-3.10%E2%80%933.13-blue">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="dashboard" src="https://img.shields.io/badge/dashboard-Streamlit-ff4b4b">
 </p>
 
-> **Status.** ✅ 548/548 unit tests pass • 68 library modules • 7 chemistries • ruff-clean •
+> **Status.** ✅ 556/556 unit tests pass • 69 library modules • 7 chemistries • ruff-clean •
 > CI on Python 3.10–3.13 • Streamlit dashboard + EV range predictor + executed demo notebook.
 
 ---
@@ -87,7 +87,7 @@ reproducible, fully-tested framework where every module is independently usable.
   the box: coulomb-counting hits **0.64% SoC RMSE** on a real B0005 discharge, and real capacity
   fade is recovered across four cells (`scripts/validate_nasa.py`, `docs/validation.md`; a ~20 KB
   real fixture is committed so CI exercises it too).
-- **Reproducible & tested** — every randomness source is seeded; 548 unit tests; pip-installable
+- **Reproducible & tested** — every randomness source is seeded; 556 unit tests; pip-installable
   with GitHub Actions CI (ruff-blocking + 90% coverage gate).
 
 ---
@@ -114,7 +114,7 @@ Each chemistry lives in `bms/chemistry.py` (`CHEMISTRY_PROPS`); request one with
 
 ```
 battery-management-system-digital-twin/
-├── bms/                       # Library (68 modules)
+├── bms/                       # Library (69 modules)
 │   ├── chemistry.py           # 7 chemistries: OCV tables, Arrhenius, limits, defaults
 │   ├── ocv_soc.py             # OCV–SOC characteristic (PCHIP interpolant, temp coefficient)
 │   ├── hysteresis.py          # Dynamic (Plett) one-state OCV hysteresis (opt-in on the ECM)
@@ -139,6 +139,7 @@ battery-management-system-digital-twin/
 │   ├── benchmark.py           # Synthetic ground-truth benchmark + ablation (hidden-state recovery)
 │   ├── aging_fit.py           # Fit + validate capacity-fade models, leave-one-cell-out (NASA)
 │   ├── vehicle_dynamics.py    # Time-domain vehicle, motor/inverter losses, drive cycle → battery current
+│   ├── can_transport.py       # Telemetry over a CAN bus: virtual (portable) and SocketCAN (Linux)
 │   ├── observability.py       # Fisher-information / CRLB — what states are identifiable
 │   ├── experiment_design.py   # Autonomous experiment designer (D-optimal + safety-gated)
 │   ├── self_calibration.py    # Observability-gated self-recalibration to a measured trace
@@ -185,7 +186,7 @@ battery-management-system-digital-twin/
 ├── notebooks/                 # Executed end-to-end demo
 ├── scripts/build_notebook.py  # Reproducible notebook generator
 ├── bms.dbc                    # Shipped Vector DBC (cantools-validated, matches the encoder)
-├── tests/test_bms.py          # 548 unit tests
+├── tests/test_bms.py          # 556 unit tests
 ├── figures/                   # 12 PNGs produced by the notebook
 ├── docs/architecture.md       # Layered-design notes & invariants
 ├── docs/estimation.md         # Which model produces each quantity + SoC benchmark
@@ -217,6 +218,7 @@ battery-management-system-digital-twin/
 | **Synthetic ground-truth benchmark — hidden-state recovery and ablation** | `bms/benchmark.py` |
 | **Aging-model fitting and leave-one-cell-out validation (NASA cells)** | `bms/aging_fit.py` |
 | **Vehicle dynamics — motor/inverter losses and drive-cycle → battery load** | `bms/vehicle_dynamics.py` |
+| **CAN transport — virtual and SocketCAN telemetry over a bus** | `bms/can_transport.py` |
 | **Central digital twin — one state, uncertainty, observability, confidence** | `bms/twin.py` |
 | **Observability engine — Fisher information / CRLB identifiability** | `bms/observability.py` |
 | **Autonomous experiment designer — optimal, safety-gated excitation** | `bms/experiment_design.py` |
@@ -392,7 +394,7 @@ the analog front-end (estimator-ranking shift), and thermal-runaway propagation.
 ## Testing
 
 ```bash
-pytest -q                                  # 548 tests, ~30 s
+pytest -q                                  # 556 tests, ~30 s
 pytest --cov=bms --cov-fail-under=85       # coverage gate (CI enforces ≥ 85%; currently 90%)
 ruff check .                               # lint — blocking in CI
 ```
