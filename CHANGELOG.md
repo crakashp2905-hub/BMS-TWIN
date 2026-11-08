@@ -4,6 +4,36 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.59.0] - 2026-11-08
+
+Vehicle-level physics — **time-domain dynamics, motor and inverter losses, and
+drive-cycle-to-battery coupling.**
+
+### Added
+- **`bms/vehicle_dynamics.py`** — `simulate_drive` follows a speed profile and
+  returns the battery current it demands, sample by sample:
+  - longitudinal dynamics: drag, rolling resistance, grade, rotating inertia;
+  - a motor and inverter loss map (copper, iron, switching, auxiliary), with
+    constant-torque and constant-power limits;
+  - regenerative braking limited by a motor-torque fraction, with the remainder
+    handled as friction braking;
+  - a tyre-road friction limit, and feasibility flags when the motor or the
+    tyres cannot follow the profile;
+  - a pack equivalent circuit that turns electrical power into current;
+  - synthetic urban, arterial and highway profiles, and a CSV loader for measured
+    speed traces.
+- 14 tests: cruise power matches resistive work; hill climbs and descents; stop-go
+  regeneration; motor-limited and traction-limited acceleration; drive current into
+  a cell twin.
+
+### Validation notes
+- Pack defaults are 96s60p of 3 Ah cells (≈ 64 kWh). The C-rate at 100 km/h is
+  ≈ 0.20 C.
+- Driving a cell twin with the drive current discharges it to within 2 % SoC of
+  the coulomb count on the test trace.
+- Motor efficiency and loss coefficients are generic, not measured on a motor.
+  Real motor maps can replace them through `MotorInverter`.
+
 ## [0.58.0] - 2026-11-08
 
 Validation — **aging models fitted and tested against measured cells.**
