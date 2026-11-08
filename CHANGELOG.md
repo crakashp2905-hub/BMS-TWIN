@@ -4,6 +4,29 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.60.0] - 2026-11-08
+
+Telemetry transport — **BMS frames over a real or virtual CAN bus.**
+
+### Added
+- **`bms/can_transport.py`** moves telemetry frames across a bus:
+  - `VirtualCanTransport`: an in-process bus built on python-can's `virtual`
+    interface. It runs on Windows, macOS and Linux, so the full transmit →
+    receive → health-monitor path runs in CI everywhere.
+  - `SocketCanTransport`: Linux SocketCAN for `can0` hardware or `vcan0`. It
+    refuses to open on other platforms with a clear error.
+  - `publish_telemetry` encodes one supervisor cycle with `BMSCanBus` and sends
+    it. `consume_telemetry` feeds received frames to `CanBusMonitor`.
+  - Malformed frames are skipped without hiding the valid frames behind them.
+- 8 tests: loopback; decoded values match the sent values; a silent transmitter is
+  flagged stale; malformed frames are dropped; a corrupted payload fails its
+  checksum; SocketCAN refuses to open off Linux; a `vcan0` loopback runs when
+  the interface exists.
+
+### Validation notes
+- The SocketCAN backend is verified only by the platform-refusal test here. The
+  `vcan0` loopback path has not run on a Linux host yet.
+
 ## [0.59.0] - 2026-11-08
 
 Vehicle-level physics — **time-domain dynamics, motor and inverter losses, and
