@@ -63,22 +63,24 @@ What the numbers say:
    confounded with batch and cell lot. The data cannot support a stress law, and
    we do not claim one.
 
-## Uncertainty is overconfident
+## Uncertainty is overconfident, and the fix holds out of sample
 
 A nominal 95 % interval from the residual spread should cover 95 % of held-out
-points. It does not:
+points. It does not: the uncorrected intervals cover about 0.87 of held-out points
+in the nested run below (0.77 when computed pooled across all cells).
 
-| Model | 95 % interval coverage | Verdict | Scale to make nominal |
+The correction is therefore learned **without the held-out cell**. For each cell,
+the scale comes from inner leave-one-cell-out predictions on the other cells
+(`bms.aging_fit.nested_interval_calibration`), then is applied to the held-out cell:
+
+| Model | Raw coverage | Nested-scaled coverage | Nominal |
 |---|---|---|---|
-| Linear pooled | 0.77 | overconfident | ×1.93 |
-| Stress power law | 0.74 | overconfident | ×1.94 |
+| Linear pooled | 0.87 | **0.93** | 0.95 |
+| Stress power law | 0.85 | **0.99** | 0.95 |
 
-The residual spread underestimates cell-to-cell variation, so the intervals are
-about half as wide as they should be. `bms.calibration_scale` returns that
-correction. The scale above is computed on the same held-out cells it is
-reported on, so it is an *upper bound on the fix*, not a validated correction:
-a nested evaluation (calibrate the scale on the training cells only) is the next
-step and is not done here.
+Per-cell scales range from about 1.8 to 3.3. B0006 is the hardest cell and drives
+most of that spread. With eight cells, coverage estimates are coarse: a difference
+of one cell moves them by about 0.06, so the figures are indicative, not precise.
 
 ## Limitations
 

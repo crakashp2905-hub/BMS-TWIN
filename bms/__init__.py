@@ -24,7 +24,7 @@ Top-level imports for convenient one-liner use::
     )
 """
 
-__version__ = "0.60.0"
+__version__ = "0.61.0"
 
 from .afe import AFE, AFEConfig
 from .agent import (
@@ -51,6 +51,7 @@ from .aging_fit import (
     leave_one_out,
     load_fade_csv,
     load_fade_curve,
+    nested_interval_calibration,
 )
 from .autocal import CalibratedCell, auto_calibrate, estimate_capacity
 from .autonomy import AutonomousBatteryTwin, LearningRound

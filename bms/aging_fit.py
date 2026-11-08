@@ -215,3 +215,68 @@ def _predicted_eol(model, curve: FadeCurve) -> float:
     soh = model.predict_soh(grid, curve.c_rate)
     below = np.where(soh <= EOL_SOH)[0]
     return float(grid[below[0]]) if below.size else float("nan")
+
+
+# ── Honest interval calibration ─────────────────────────────────────────────
+
+@dataclass(frozen=True)
+class NestedCalibration:
+    """Out-of-sample check of a prediction-interval scale.
+
+    For each held-out cell, the interval scale is learned only from inner
+    leave-one-cell-out predictions on the *other* cells, then applied to the held-out
+    cell. Coverage is therefore never measured on data that set the scale.
+    """
+
+    model: str
+    level: float
+    scales: dict            # held-out cell -> scale learned without it
+    raw_coverage: float     # held-out coverage with unscaled sigma
+    nested_coverage: float  # held-out coverage with the nested scale
+    per_cell_coverage: dict
+
+
+def nested_interval_calibration(curves: list[FadeCurve], model_factory,
+                                level: float = 0.95) -> NestedCalibration:
+    """Run the nested calibration check described in :class:`NestedCalibration`."""
+    scales, raw_hits, nest_hits, per_cell = {}, [], [], {}
+    all_raw, all_nested = [], []
+    for i, held in enumerate(curves):
+        others = [c for j, c in enumerate(curves) if j != i]
+        yi, mi, si = [], [], []
+        for inner in others:                       # inner LOCO on the other cells only
+            train = [c for c in others if c is not inner]
+            m = model_factory().fit(train)
+            n = inner.cycles - inner.cycles[0]
+            yi.append(inner.soh)
+            mi.append(m.predict_soh(n, inner.c_rate))
+            si.append(np.full(n.size, m.residual_sigma))
+        yi, mi, si = (np.concatenate(v) for v in (yi, mi, si))
+        scale = calibration_scale_for(yi, mi, si, level)
+        scales[held.cell] = scale
+
+        m = model_factory().fit(others)
+        n = held.cycles - held.cycles[0]
+        y, mu, s = held.soh, m.predict_soh(n, held.c_rate), np.full(n.size, m.residual_sigma)
+        raw = coverage_for(y, mu, s, level)
+        nest = coverage_for(y, mu, scale * s, level)
+        raw_hits.append(raw)
+        nest_hits.append(nest)
+        per_cell[held.cell] = nest
+        all_raw.append((y, mu, s))
+        all_nested.append((y, mu, scale * s))
+    name = getattr(model_factory, "__name__", str(model_factory))
+    return NestedCalibration(
+        model=name, level=level, scales=scales,
+        raw_coverage=float(np.mean(raw_hits)), nested_coverage=float(np.mean(nest_hits)),
+        per_cell_coverage=per_cell)
+
+
+def calibration_scale_for(y, mu, sigma, level):
+    from .uncertainty import calibration_scale
+    return calibration_scale(y, mu, sigma, level)
+
+
+def coverage_for(y, mu, sigma, level):
+    from .uncertainty import coverage
+    return coverage(y, mu, sigma, level)
