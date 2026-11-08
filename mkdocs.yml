@@ -22,6 +22,7 @@ nav:
   - Estimation & benchmarks: estimation.md
   - Auto-calibration & cleaning: calibration.md
   - Validation (real data): validation.md
+  - Aging-model validation: aging_validation.md
   - Safety case: safety_case.md
   - Firmware & SIL: firmware.md
 
