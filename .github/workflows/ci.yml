@@ -56,3 +56,27 @@ jobs:
         run: pip install ruff
       - name: Lint (blocking)
         run: ruff check .
+
+  socketcan:
+    name: SocketCAN loopback (Linux vcan0)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package + dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Create a virtual CAN interface
+        run: |
+          sudo modprobe vcan
+          sudo ip link add dev vcan0 type vcan
+          sudo ip link set up vcan0
+          ip -details link show vcan0
+      - name: SocketCAN transport must run, not skip
+        env:
+          BMS_REQUIRE_VCAN: "1"
+        run: pytest tests/test_can_transport.py -q -rs -k "SocketCan or vcan"
