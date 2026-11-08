@@ -4,6 +4,34 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.58.0] - 2026-11-08
+
+Validation — **aging models fitted and tested against measured cells.**
+
+### Added
+- **`bms/aging_fit.py`** — fits capacity-fade models to measured cycle data and
+  scores them leave-one-cell-out: a stress-scaled power law, a pooled linear model,
+  and the repository's shipped `AgingModel` applied unchanged as the literature
+  baseline. Capacities are despiked (`bms.signal.hampel`) and normalised to the
+  first cycle; stress rate is measured from the discharge current.
+- **Committed derived dataset** `data/samples/nasa_capacity_fade.csv` (8 NASA PCoE
+  cells, public domain, attributed) so CI runs the validation without downloads.
+- **`scripts/validate_aging.py`** reproduces the tables from the public NASA files.
+- **`docs/aging_validation.md`** (in the mkdocs nav) with the results and limits.
+- 9 tests on the committed data.
+
+### Findings (held-out cells)
+- The shipped literature defaults are wrong for these cells: mean SoH error 10.1 %,
+  and end-of-life predicted about 1,900 cycles too late.
+- Fitting to measured data gives 3.9 %, with 1 C end-of-life within about ±50 cycles.
+- A stress term does not help: the fitted C-rate exponent is negative, and the
+  higher-rate evidence is 28 cycles from three cells.
+- Nominal 95 % prediction intervals cover 74–77 % of held-out cells; they need
+  widening by about 1.9×. That scale is computed on the same held-out cells, so it
+  is an upper bound on the fix, not a validated correction.
+- Data correction: B0028 was measured at 1 C despite its 2 C batch name; labels
+  come from the data.
+
 ## [0.57.0] - 2026-11-08
 
 Validation — **synthetic ground-truth benchmark with ablation** (roadmap Tier 1 #5–#7).
