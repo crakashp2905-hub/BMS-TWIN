@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.61.0] - 2026-11-08
+
+Validation — **the interval correction is now checked out of sample.**
+
+### Added
+- `bms.aging_fit.nested_interval_calibration`: learns the prediction-interval scale
+  for each held-out cell from inner leave-one-cell-out predictions on the other
+  cells, then applies it to the held-out cell. Coverage is never measured on data
+  that set the scale.
+- Nested results: linear model coverage **0.87 → 0.93** (nominal 0.95); stress
+  power law **0.85 → 0.99**. Per-cell scales range from about 1.8 to 3.3.
+- 2 tests (the nested correction restores coverage; one scale per held-out cell).
+
+### Changed
+- `docs/aging_validation.md` replaces the upper-bound caveat from 0.58.0 with the
+  nested result, and states that eight cells make the coverage figures indicative.
+
 ## [0.60.0] - 2026-11-08
 
 Telemetry transport — **BMS frames over a real or virtual CAN bus.**
