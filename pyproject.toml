@@ -39,7 +39,8 @@ dev = ["pytest>=7.4", "pytest-cov>=4.0", "ruff>=0.5", "hypothesis>=6.0", "python
        "fastapi>=0.110", "httpx>=0.27",     # httpx powers FastAPI's TestClient and the gateway client
        "uvicorn>=0.27",                      # real-socket gateway tests
        "cantools>=39"]                       # decode virtual-CAN output with the shipped bms.dbc
-api = ["fastapi>=0.110", "uvicorn>=0.27"]   # live twin service (bms.api:create_app)
+api = ["fastapi>=0.110", "uvicorn>=0.27",    # live twin service (bms.api:create_app) and telemetry gateway
+       "httpx>=0.27"]                         # the gateway's reference client (bms.gateway.TelemetryClient)
 docs = ["mkdocs>=1.6", "mkdocs-material>=9.5"]   # build the documentation site
 onnx = ["onnxruntime>=1.16"]                       # framework-neutral estimators
 agent = ["langchain-core>=0.2", "langgraph>=0.2", "langfuse>=2.0"]  # LLM diagnostic agent

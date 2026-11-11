@@ -50,6 +50,7 @@ import numpy as np
 
 from .drive_cycles import DriveCycle, get_cycle
 from .pack_coupling import LIM_SOC, PackLimits, PackSpec, VehiclePack
+from .sop import SOPLimit
 from .telemetry import DEFAULT_EPOCH_UNIX_S, TelemetryRecord, format_timestamp
 from .vehicle_dynamics import MotorInverter, Vehicle
 
@@ -64,6 +65,7 @@ FLAG_REGEN_PACK = 8          # pack charge limit, SOC or temperature reduced reg
 FLAG_REGEN_MOTOR = 16        # motor capability or low-speed fade reduced regeneration
 FLAG_SOC_EMPTY = 32          # pack at its SOC floor: no discharge available
 FLAG_THERMAL = 64            # temperature derating active
+SOP_HORIZONS_S = (2.0, 10.0, 30.0)     # the horizons the CAN SOP frames carry
 _FLAG_NAMES = {FLAG_PACK_DISCHARGE: "pack_discharge_limit", FLAG_MOTOR: "motor_limit",
                FLAG_TRACTION: "traction_limit", FLAG_REGEN_PACK: "regen_pack_limit",
                FLAG_REGEN_MOTOR: "regen_motor_limit", FLAG_SOC_EMPTY: "soc_empty",
@@ -360,6 +362,22 @@ class DriveRun:
         e_out = float(np.sum(np.maximum(c["p_wheel_W"], 0.0)))
         return e_out / e_in if e_in > 0.0 else float("nan")
 
+    def sop_at(self, i: int) -> dict[float, SOPLimit]:
+        """State-of-power limits at channel index ``i`` (the nearest earlier telemetry instant).
+
+        ``temperature_derate`` is not recorded and is reported as 1.0: the CAN SOP frames, which
+        are the consumers of these limits, do not carry it.
+        """
+        c = self.channels
+        j = int(i)
+        while j > 0 and math.isnan(c[f"sop{int(SOP_HORIZONS_S[0])}_traction_W"][j]):
+            j -= 1
+        return {h: SOPLimit(horizon_s=h, traction_power_W=float(c[f"sop{int(h)}_traction_W"][j]),
+                            regen_power_W=float(c[f"sop{int(h)}_regen_W"][j]),
+                            traction_current_A=float(c[f"sop{int(h)}_traction_A"][j]),
+                            regen_current_A=float(c[f"sop{int(h)}_regen_A"][j]),
+                            temperature_derate=1.0) for h in SOP_HORIZONS_S}
+
     # ── Telemetry ──────────────────────────────────────────────────────
     def sample_indices(self, telemetry_dt_s: float | None = None) -> np.ndarray:
         """Indices into the channel arrays at telemetry instants (always includes the last)."""
@@ -472,6 +490,17 @@ class EVSimulator:
                  "p_inv_W", "p_idle_W", "p_aux_lv_W", "p_aux_dcdc_W", "p_aux_hvac_W", "p_aux_cool_W",
                  "p_ocv25_W", "p_tshift_W", "p_hyst_W", "p_r0_W", "p_pol_in_W", "p_rc_store_W", "heat_W")
         ch = {n: np.zeros(n_steps + 1) for n in names}
+        # State of power at telemetry instants only (NaN between), for the CAN SOP frames.
+        for h in SOP_HORIZONS_S:
+            for q in ("traction_W", "regen_W", "traction_A", "regen_A"):
+                ch[f"sop{int(h)}_{q}"] = np.full(n_steps + 1, np.nan)
+
+        def put_sop(i):
+            for h, lim in pack.sop_limits(SOP_HORIZONS_S).items():
+                ch[f"sop{int(h)}_traction_W"][i] = lim.traction_power_W
+                ch[f"sop{int(h)}_regen_W"][i] = lim.regen_power_W
+                ch[f"sop{int(h)}_traction_A"][i] = lim.traction_current_A
+                ch[f"sop{int(h)}_regen_A"][i] = lim.regen_current_A
 
         m, m_eff = veh.mass_kg, veh.effective_mass_kg
         r, gear, eta = veh.wheel_radius_m, veh.gear_ratio, veh.gear_efficiency
@@ -509,6 +538,7 @@ class EVSimulator:
         ch["cell_v_min_V"][0] = float(snap0["v_group_V"].min())
         ch["cell_v_max_V"][0] = float(snap0["v_group_V"].max())
         ch["grade_rad"][0] = grade[0]
+        put_sop(0)
         seq = 0
         if emit:
             yield _make_record(ch, 0, seq, epoch_unix_s)
@@ -664,9 +694,11 @@ class EVSimulator:
             ch["p_r0_W"][i], ch["p_pol_in_W"][i], ch["p_rc_store_W"][i] = ps.p_r0_W, ps.p_pol_in_W, ps.p_pol_stored_dW
             ch["heat_W"][i] = ps.heat_W
 
-            if emit and (i % stride == 0 or i == n_steps):
-                seq += 1
-                yield _make_record(ch, i, seq, epoch_unix_s)
+            if i % stride == 0 or i == n_steps:
+                put_sop(i)
+                if emit:
+                    seq += 1
+                    yield _make_record(ch, i, seq, epoch_unix_s)
 
         wh = dt / 3600.0
 

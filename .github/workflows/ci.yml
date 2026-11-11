@@ -76,7 +76,7 @@ jobs:
           sudo ip link add dev vcan0 type vcan
           sudo ip link set up vcan0
           ip -details link show vcan0
-      - name: SocketCAN transport must run, not skip
+      - name: SocketCAN transport and a full drive over vcan0 must run, not skip
         env:
           BMS_REQUIRE_VCAN: "1"
-        run: pytest tests/test_can_transport.py -q -rs -k "SocketCan or vcan"
+        run: pytest tests/test_can_transport.py tests/test_ev_can.py -q -rs -k "SocketCan or vcan"
