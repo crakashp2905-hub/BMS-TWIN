@@ -4,6 +4,42 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.64.0] - 2026-11-12
+
+Sprint 1, part 1 — **a virtual EV that follows standardized drive cycles.** Simulation only: nothing here
+has been validated against a physical vehicle.
+
+### Added
+- **`bms/ev_drive.py`**: forward-dynamics simulator. A driver follows the target speed; the motor,
+  tyre grip and the pack's limits decide what the car can actually do. Regeneration is blended with
+  friction brakes; auxiliary loads (low voltage, HVAC, cooling) draw from the bus. Reports which
+  limit bound at every step. `EVSimulator(config, on_step=hook)` is a fault-injection hook.
+- **An energy ledger** that sums every flow independently. Vehicle-side closure is 1e-11 to 2e-10 of
+  the energy flowing; pack-side closure is 1e-6 to 3e-5 and falls with the time step.
+- **`bms/pack_coupling.py`**: `VehiclePack`, the repository's second-order ECM vectorized over
+  series groups (96s60p in milliseconds), pinned to `SecondOrderECM` and `BatteryPack`. Solves
+  `P = V(I)·I` and respects current, cell-voltage, power, SOC and temperature limits.
+- **`bms/drive_cycles.py`** with five bundled EPA / UN-ECE schedules (UDDS, HWFET, US06, ECE-15,
+  EUDC) in `bms/cycles/`, byte-for-byte with checksums, plus a CSV loader that rejects malformed
+  and implausible profiles. Cycle statistics are checked against the published values.
+- **`bms/telemetry.py`**: a versioned record schema (timestamp, speed, SOC, voltage, current,
+  temperature, power, and extended channels), range validation, JSON / JSONL / CSV, a JSON Schema
+  generated from one field table, and stream continuity checks.
+- `docs/ev_drive.md`, 260 tests (energy balance, reproducibility, plausibility, limits, fault
+  injection), and `.gitattributes` to keep the bundled cycle files unmodified. A mutation check
+  (18 deliberate bugs in the new code) is caught by the tests; it found four test gaps and one
+  real bug in the stop logic, all fixed.
+
+### Findings
+- The forward model agrees with the existing inverse model (`simulate_drive`) on net motor-side
+  energy to within 0.08–0.48 % on five cycles. This is consistency between two models, not
+  validation against a vehicle.
+- `BatteryPack` reports a parallel group's voltage without the static hysteresis offset that its
+  single-cell path includes. Existing behaviour, left unchanged and documented.
+
+### Changed
+- `dev` extras add `uvicorn` and `cantools`, so DBC decoding is exercised in CI instead of skipped.
+
 ## [0.63.0] - 2026-11-08
 
 Validation — **a second, independent dataset, and a negative transfer result.**

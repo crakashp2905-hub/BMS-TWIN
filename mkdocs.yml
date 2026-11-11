@@ -23,6 +23,7 @@ nav:
   - Auto-calibration & cleaning: calibration.md
   - Validation (real data): validation.md
   - Aging-model validation: aging_validation.md
+  - Virtual EV drive simulation: ev_drive.md
   - Safety case: safety_case.md
   - Firmware & SIL: firmware.md
 

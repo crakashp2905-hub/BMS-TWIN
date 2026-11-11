@@ -24,7 +24,7 @@ Top-level imports for convenient one-liner use::
     )
 """
 
-__version__ = "0.63.0"
+__version__ = "0.64.0"
 
 from .afe import AFE, AFEConfig
 from .agent import (
@@ -154,6 +154,17 @@ from .digital_thread import (
     link_formation_to_aging,
     project_field_trajectory,
 )
+from .drive_cycles import (
+    CycleStats,
+    DriveCycle,
+    DriveCycleError,
+    available_cycles,
+    constant_speed,
+    get_cycle,
+    load_cycle_csv,
+    load_epa_cycle,
+    register_cycle,
+)
 from .dva import compute_dva, compute_ica, synthetic_discharge_for_dva
 from .ecm import ECMParameters, SecondOrderECM, fit_ecm_parameters
 from .eis_analysis import compute_drt, eis_resistances, eis_soh
@@ -171,6 +182,18 @@ from .estimation import (
     model_from_file,
     register_soc_estimator,
     soc_estimate,
+)
+from .ev_drive import (
+    AuxiliaryLoads,
+    DriveRun,
+    EnergyLedger,
+    EVConfig,
+    EVSimulator,
+    PackPowerError,
+    SensorModel,
+    describe_flags,
+    generic_compact_ev,
+    simulate_cycle,
 )
 from .experiment_design import (
     Experiment,
@@ -243,6 +266,7 @@ from .observability import (
 from .ocv_soc import OCVSOC
 from .online_id import RLSIdentifier
 from .pack import BatteryPack, PackConfig
+from .pack_coupling import PackLimits, PackSpec, VehiclePack
 from .pack_twin import CellState, PackTwin, PackTwinState
 from .passport import BatteryPassport
 from .prognostics import (
@@ -297,6 +321,11 @@ from .soc_estimators import (
 from .soh_estimator import JointEKFSoH
 from .sop import SOPConfig, SOPLimit, StateOfPower
 from .spm import SingleParticleModel, SPMParams
+from .telemetry import (
+    TelemetryRecord,
+    TelemetryValidationError,
+    check_sequence,
+)
 from .thermal import PIDController, PredictiveCoolingController, ThermalModel, ThermalParameters
 from .twin import BatteryDigitalTwin, TwinState
 from .twin_sync import TwinSync
@@ -399,6 +428,12 @@ __all__ = [
     "publish_telemetry", "consume_telemetry",
     "Vehicle", "MotorInverter", "PackModel", "DriveResult", "simulate_drive",
     "drive_to_battery_load",
+    "DriveCycle", "DriveCycleError", "CycleStats", "available_cycles", "get_cycle",
+    "constant_speed", "load_cycle_csv", "load_epa_cycle", "register_cycle",
+    "PackSpec", "PackLimits", "VehiclePack",
+    "EVConfig", "EVSimulator", "DriveRun", "EnergyLedger", "AuxiliaryLoads", "SensorModel",
+    "PackPowerError", "describe_flags", "generic_compact_ev", "simulate_cycle",
+    "TelemetryRecord", "TelemetryValidationError", "check_sequence",
     "FadeCurve", "LinearPooledFade", "LiteratureFade", "PowerLawFade",
     "leave_one_out", "load_fade_csv", "load_fade_curve",
     "ObservabilityEngine", "ObservabilityReport", "analyze_observability",

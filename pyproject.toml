@@ -36,7 +36,9 @@ dependencies = [
 app = ["streamlit>=1.30", "plotly>=5.18", "matplotlib>=3.7"]
 notebook = ["jupyter>=1.0", "nbformat>=5.9", "matplotlib>=3.7"]
 dev = ["pytest>=7.4", "pytest-cov>=4.0", "ruff>=0.5", "hypothesis>=6.0", "python-can>=4.3",
-       "fastapi>=0.110", "httpx>=0.27"]     # httpx powers FastAPI's TestClient
+       "fastapi>=0.110", "httpx>=0.27",     # httpx powers FastAPI's TestClient and the gateway client
+       "uvicorn>=0.27",                      # real-socket gateway tests
+       "cantools>=39"]                       # decode virtual-CAN output with the shipped bms.dbc
 api = ["fastapi>=0.110", "uvicorn>=0.27"]   # live twin service (bms.api:create_app)
 docs = ["mkdocs>=1.6", "mkdocs-material>=9.5"]   # build the documentation site
 onnx = ["onnxruntime>=1.16"]                       # framework-neutral estimators
@@ -49,6 +51,9 @@ Repository = "https://github.com/crakashp2905-hub/battery-management-system-digi
 
 [tool.setuptools]
 packages = ["bms"]
+
+[tool.setuptools.package-data]
+bms = ["cycles/*.txt", "cycles/README.md"]   # bundled standard drive cycles
 
 [tool.setuptools.dynamic]
 version = { attr = "bms.__version__" }
