@@ -1,0 +1,3 @@
+# Bundled reference cycles must stay byte-for-byte identical: their SHA-256
+# checksums are verified by tests/test_drive_cycles.py.
+bms/cycles/*.txt -text

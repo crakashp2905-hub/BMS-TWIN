@@ -8,10 +8,10 @@ diagnostics, an EV range predictor, and a plain-language interpretability layer 
 reproducible, fully-tested framework where every module is independently usable.
 
 <p>
-  <img alt="version" src="https://img.shields.io/badge/version-0.63.0-blue">
+  <img alt="version" src="https://img.shields.io/badge/version-0.64.0-blue">
   <img alt="CI" src="https://github.com/crakashp2905-hub/battery-management-system-digital-twin/actions/workflows/ci.yml/badge.svg">
   <img alt="coverage" src="https://img.shields.io/badge/coverage-90%25-brightgreen">
-  <img alt="tests" src="https://img.shields.io/badge/tests-562%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-822%20passing-brightgreen">
   <img alt="python" src="https://img.shields.io/badge/python-3.10%E2%80%933.13-blue">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="dashboard" src="https://img.shields.io/badge/dashboard-Streamlit-ff4b4b">
@@ -140,6 +140,11 @@ battery-management-system-digital-twin/
 │   ├── aging_fit.py           # Fit + validate capacity-fade models, leave-one-cell-out (NASA)
 │   ├── vehicle_dynamics.py    # Time-domain vehicle, motor/inverter losses, drive cycle → battery current
 │   ├── can_transport.py       # Telemetry over a CAN bus: virtual (portable) and SocketCAN (Linux)
+│   ├── drive_cycles.py        # Standardized (EPA, UN/ECE) and custom speed profiles, validated
+│   ├── pack_coupling.py       # Vehicle pack: power → current with limits, thermal state, SOP
+│   ├── ev_drive.py            # Forward-dynamics virtual EV: driver, drivetrain, pack, energy ledger
+│   ├── telemetry.py           # Timestamped telemetry schema, validation, JSON / CSV
+│   ├── cycles/                # Bundled EPA / UN-ECE drive-cycle files, byte-for-byte, with checksums
 │   ├── observability.py       # Fisher-information / CRLB — what states are identifiable
 │   ├── experiment_design.py   # Autonomous experiment designer (D-optimal + safety-gated)
 │   ├── self_calibration.py    # Observability-gated self-recalibration to a measured trace
@@ -186,7 +191,7 @@ battery-management-system-digital-twin/
 ├── notebooks/                 # Executed end-to-end demo
 ├── scripts/build_notebook.py  # Reproducible notebook generator
 ├── bms.dbc                    # Shipped Vector DBC (cantools-validated, matches the encoder)
-├── tests/test_bms.py          # 562 unit tests
+├── tests/                     # 822 tests (pytest)
 ├── figures/                   # 12 PNGs produced by the notebook
 ├── docs/architecture.md       # Layered-design notes & invariants
 ├── docs/estimation.md         # Which model produces each quantity + SoC benchmark
@@ -194,6 +199,7 @@ battery-management-system-digital-twin/
 ├── docs/firmware.md           # Control-core → embedded C, with the twin as SIL oracle
 ├── docs/safety_case.md        # FMEA + Fault Tree + traceability (every hazard → a test)
 ├── docs/validation.md         # Real-data validation harness + dataset guide
+├── docs/ev_drive.md           # Virtual EV: model, limits, energy ledger, telemetry, scope
 ├── scripts/benchmark_estimators.py  # Head-to-head SoC RMSE across chemistries/conditions
 ├── Dockerfile                 # Container for the live API service
 ├── pyproject.toml • CHANGELOG.md • CONTRIBUTING.md • requirements.txt • LICENSE (MIT)
@@ -219,6 +225,10 @@ battery-management-system-digital-twin/
 | **Aging-model fitting and leave-one-cell-out validation (NASA cells)** | `bms/aging_fit.py` |
 | **Vehicle dynamics — motor/inverter losses and drive-cycle → battery load** | `bms/vehicle_dynamics.py` |
 | **CAN transport — virtual and SocketCAN telemetry over a bus** | `bms/can_transport.py` |
+| **Virtual EV — forward dynamics, drivetrain, regeneration, auxiliaries, energy ledger** | `bms/ev_drive.py` |
+| **Vehicle pack coupling — power → current within current / voltage / SOC / thermal limits** | `bms/pack_coupling.py` |
+| **Drive cycles — EPA UDDS / HWFET / US06, UN/ECE ECE-15 / EUDC, custom CSV profiles** | `bms/drive_cycles.py` |
+| **Telemetry schema — timestamped speed, SOC, voltage, current, temperature, power** | `bms/telemetry.py` |
 | **Central digital twin — one state, uncertainty, observability, confidence** | `bms/twin.py` |
 | **Observability engine — Fisher information / CRLB identifiability** | `bms/observability.py` |
 | **Autonomous experiment designer — optimal, safety-gated excitation** | `bms/experiment_design.py` |
