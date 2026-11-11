@@ -119,6 +119,53 @@ class SocketCanTransport(_PythonCanTransport):
         super().__init__(channel, **bus_kwargs)
 
 
+class ImpairedTransport(CanTransport):
+    """Wraps a transport and damages outgoing frames, to test receivers against a bad bus.
+
+    Each ``send`` independently drops the frame, flips one random bit in it, and/or sends it twice,
+    with the given probabilities; ``silent = True`` kills the transmitter outright.  The random
+    stream is seeded and always advances the same way, so a failing test reproduces exactly.
+    Counters record what was done.
+    """
+
+    def __init__(self, inner: CanTransport, *, drop: float = 0.0, duplicate: float = 0.0,
+                 corrupt: float = 0.0, seed: int = 0) -> None:
+        import numpy as np
+        for name, p in (("drop", drop), ("duplicate", duplicate), ("corrupt", corrupt)):
+            if not 0.0 <= p <= 1.0:
+                raise ValueError(f"{name} must be a probability in [0, 1]")
+        self.inner, self.name = inner, inner.name
+        self.drop_p, self.dup_p, self.corrupt_p = drop, duplicate, corrupt
+        self._rng = np.random.default_rng(seed)
+        self.silent = False
+        self.sent = self.dropped = self.duplicated = self.corrupted = 0
+
+    def send(self, frame: CANFrame) -> None:
+        self.sent += 1
+        # Always draw all four numbers so the stream does not depend on the outcomes.
+        r_drop, r_corrupt, r_dup, r_bit = self._rng.random(4)
+        if self.silent or r_drop < self.drop_p:
+            self.dropped += 1
+            return
+        out = frame
+        if r_corrupt < self.corrupt_p:
+            data = bytearray(frame.data)
+            bit = int(r_bit * len(data) * 8)
+            data[bit // 8] ^= 1 << (bit % 8)
+            out = CANFrame(frame.arbitration_id, bytes(data), frame.is_extended_id)
+            self.corrupted += 1
+        self.inner.send(out)
+        if r_dup < self.dup_p:
+            self.inner.send(out)
+            self.duplicated += 1
+
+    def recv(self, timeout: float = 0.1) -> CANFrame | None:
+        return self.inner.recv(timeout)
+
+    def close(self) -> None:
+        self.inner.close()
+
+
 def publish_telemetry(transport: CanTransport, bus: BMSCanBus, result: dict,
                       sop: dict) -> int:
     """Encode one supervisor cycle with :class:`BMSCanBus` and transmit it.
