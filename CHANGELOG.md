@@ -4,6 +4,38 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- **A parallel group reports its terminal voltage with the static OCV hysteresis offset, like a single cell.**
+  `BatteryPack.step()` for `n_parallel > 1` evaluated the OCV at zero current, so its group voltage lacked the
+  `−hysteresis_v·sign(I)` that `SecondOrderECM` (and so `n_parallel = 1`) includes: 8 mV per group for NMC,
+  20 mV for LFP. The offset now follows the sign of the group current. A group of identical cells equals the one
+  equivalent cell (`R/n`, `C·n`, `Q·n`) and `bms.VehiclePack` to 1e-9 V. This is the limitation recorded under 0.64.0.
+- `_ParallelGroup.terminal_voltage(..., group_current=I)` left the offset out for every `n_parallel`, including 1, so it
+  disagreed with `step()` by `hysteresis_v`. It now agrees. `StateOfPower.calculate(pack, pack_current_A=I)` without
+  supplied voltages uses it, so the voltages it starts from under load now carry the offset.
+- `bms/pack.py` described the group voltage as a mean of cell voltages and the current split as conductance-weighted.
+  It now describes the shared-node solve and the hysteresis rule, including its approximation.
+
+### Changed
+- Numerical behaviour, for every built-in chemistry (all have a non-zero default `hysteresis_v`):
+  `BatteryPack.step()["v_cells"]` with `n_parallel > 1` moves by `−hysteresis_v·sign(I)` per group, and `["v_pack"]` by
+  `n_cells` times that. Unchanged: no-load voltages (`cell_voltages()`, `pack_voltage()`), `n_parallel = 1`, runs with
+  `hysteresis_v = 0`, and cells with a dynamic `PlettHysteresis` model. SOC, RC states and circulating currents are
+  bit-identical, because the offset only shifts the reported voltage.
+- The offset takes the sign of the *group* current, not of each cell's. In a group of mismatched cells that circulate
+  current of both signs it is not resolved cell by cell; the docstring and `docs/ev_drive.md` say so.
+
+### Tests
+- `tests/test_pack_hysteresis.py` (42 tests) pins the behaviour for `n_parallel` in 1, 2 and 3: a group of identical
+  cells matches the equivalent `SecondOrderECM` at three temperatures, the offset is −h on discharge, +h on charge and
+  0 at rest, `step()` and `terminal_voltage()` agree, hysteresis moves nothing but the reported voltage (also with
+  scattered cells), and a cell with a dynamic model is not given the static offset as well.
+- `test_parallel_groups_match_batterypack` no longer switches hysteresis off.
+- A probe over the full suite found six of the 1,008 existing tests that reach the changed path. None needed a different
+  expected value or a looser tolerance.
+
 ## [0.66.0] - 2026-11-12
 
 Sprint 1, part 3 — **documented benchmark results.** Simulation only: the report measures internal

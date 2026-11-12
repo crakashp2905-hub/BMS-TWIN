@@ -83,7 +83,7 @@ it is unchanged.
 `bms.VehiclePack` is the repository's second-order ECM vectorized over series groups: each group
 is one equivalent cell with `R / n_parallel` and `Q × n_parallel`. A test pins it to
 `SecondOrderECM` step for step (difference below 1e-9 V with temperature changing) and to
-`BatteryPack` for parallel groups.
+`BatteryPack` for parallel groups, both with the chemistry's static hysteresis on.
 
 `P = V(I)·I` is solved on the model's own terminal voltage, so after the step the terminal power
 equals the request to numerical precision. Discharge and charge are each limited by the
@@ -202,6 +202,7 @@ faults on the telemetry stream (stuck, dropout, spike) are caught by the reposit
 - The pack is one equivalent cell per series group; cells within a parallel group are identical.
 - Battery heating has no active heater; there is no battery-to-cabin thermal coupling.
 - Self-discharge, aging and calendar effects are not modeled over a drive.
-- `BatteryPack` reports a parallel group's voltage without the static hysteresis offset that its
-  single-cell path includes. This is existing behaviour; the vehicle pack includes hysteresis
-  and is compared with `BatteryPack` with hysteresis switched off.
+- `BatteryPack` applies the static hysteresis offset to a parallel group by the sign of the group
+  current. For identical cells that is the equivalent cell the vehicle pack computes, and the tests
+  compare the two with hysteresis on. In a group of mismatched cells that circulate current of both
+  signs the offset is not resolved cell by cell; the vehicle pack has no such cells.
