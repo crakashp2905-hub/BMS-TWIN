@@ -23,7 +23,7 @@ Simulation only: nothing here has been validated against a physical vehicle or n
   replayed). Includes a reconnecting `TelemetryClient`, `DriveFeeder`, `GatewayServer` and a CLI.
 - State-of-power limits are recorded at telemetry instants (`DriveRun.sop_at`).
 - The `socketcan` CI job also runs a full UDDS drive over `vcan0`.
-- 169 tests, including real-socket fault injection (cut, stalled and redirected connections)
+- 173 tests, including real-socket fault injection (cut, stalled and redirected connections)
   and end-to-end checks that the CAN output and the gateway stream agree with the simulation.
 - `docs/ev_gateway.md`.
 
@@ -32,8 +32,12 @@ Simulation only: nothing here has been validated against a physical vehicle or n
 - TLS inside the gateway, durable token revocation and multi-process hubs (see the doc).
 
 ### Verification
-- A mutation check of the gateway's security-critical paths applied 22 deliberate bugs one at a time: 19 were caught by the tests and 3 survived (mutation numbers [19, 20, 22]). The survivors have not been analysed. 1 planned mutation(s) could not be applied because their target text had changed.
-- The vcan tests could not run on the development machine (Windows); the `socketcan` CI job is their check.
+- A mutation check applied 23 deliberate bugs to the gateway one at a time and the tests catch all 23. The
+  first run caught 18; three client tests were added for the three survivors and one mutation target was
+  corrected.
+- The vcan tests cannot run on the development machine (Windows); the `socketcan` CI job is their check.
+  It caught a bug in one of them (a reference-frame error in the test itself), now fixed and covered by a
+  version of the same check that runs on every platform.
 
 ## [0.64.0] - 2026-11-12
 

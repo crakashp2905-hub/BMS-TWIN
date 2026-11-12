@@ -11,7 +11,7 @@ reproducible, fully-tested framework where every module is independently usable.
   <img alt="version" src="https://img.shields.io/badge/version-0.65.0-blue">
   <img alt="CI" src="https://github.com/crakashp2905-hub/battery-management-system-digital-twin/actions/workflows/ci.yml/badge.svg">
   <img alt="coverage" src="https://img.shields.io/badge/coverage-90%25-brightgreen">
-  <img alt="tests" src="https://img.shields.io/badge/tests-991%20passing-brightgreen">
+  <img alt="tests" src="https://img.shields.io/badge/tests-995%20passing-brightgreen">
   <img alt="python" src="https://img.shields.io/badge/python-3.10%E2%80%933.13-blue">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
   <img alt="dashboard" src="https://img.shields.io/badge/dashboard-Streamlit-ff4b4b">
@@ -193,7 +193,7 @@ battery-management-system-digital-twin/
 ├── notebooks/                 # Executed end-to-end demo
 ├── scripts/build_notebook.py  # Reproducible notebook generator
 ├── bms.dbc                    # Shipped Vector DBC (cantools-validated, matches the encoder)
-├── tests/                     # 991 tests (pytest)
+├── tests/                     # 995 tests (pytest)
 ├── figures/                   # 12 PNGs produced by the notebook
 ├── docs/architecture.md       # Layered-design notes & invariants
 ├── docs/estimation.md         # Which model produces each quantity + SoC benchmark

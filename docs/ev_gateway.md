@@ -202,9 +202,16 @@ On real sockets, with a TCP proxy that cuts, stalls and redirects live connectio
 | Full UDDS through the gateway | 1,370 records, equal to `run.telemetry()` |
 | Bad token, forged token, write attempt | 401, 401, 405 |
 
-A mutation check of the gateway's security-critical paths applied 22 deliberate bugs one at a time: 19 were caught by the tests and 3 survived (mutation numbers [19, 20, 22]). The survivors have not been analysed. 1 planned mutation(s) could not be applied because their target text had changed. The first eighteen covered the signature check, expiry, scope, revocation, the read-only guard,
-WebSocket refusal, canonical encoding, gap detection, resume, de-duplication, no retry on an
-authentication failure, slot release, keep-alives, throttling and the security headers.
+A mutation check applied 23 deliberate bugs to the gateway one at a time, and the tests now catch all 23.
+The first run caught 18, let 3 survive (the client's backoff not restarting after progress, and two
+redundant resets of its de-duplication state) and could not apply one because its target text had changed.
+Three client tests were added for those gaps (backoff restarts after progress, a new epoch resets the
+duplicate filter, a reset means forget what you have seen), the mutation target was corrected, and the
+second run caught the five that were left. The 23 cover the signature check, expiry, not-yet-valid tokens,
+scope, revocation, the read-only guard, WebSocket refusal, canonical encoding, gap detection, resume,
+de-duplication, no retry on an authentication failure, slot release, keep-alives, throttling, the expiry
+event, 403 versus 401, the security headers, epoch handling, the minimum secret length, backoff reset and
+the disabled docs routes.
 
 ### What the gateway does not cover
 
