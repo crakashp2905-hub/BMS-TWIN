@@ -4,6 +4,33 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.66.0] - 2026-11-12
+
+Sprint 1, part 3 — **documented benchmark results.** Simulation only: the report measures internal
+consistency, plausibility and software speed, and says so at the top. It is not validation against a
+physical vehicle.
+
+### Added
+- **`scripts/benchmark_ev_drive.py`** measures the virtual EV and writes `docs/ev_benchmark.md` from what it
+  measured, so no number in the report is typed in. It covers the six standard cycles (consumption,
+  regeneration, drivetrain efficiency, energy-account closure), agreement with the older inverse model,
+  convergence with the internal step, sensitivity to vehicle and climate, behaviour when the pack limits
+  bind on US06, reproducibility (same process, fresh interpreter, CAN bytes, telemetry), CAN decode
+  fidelity and throughput, and gateway throughput, latency, replay and token cost.
+- Sentences in the report that state a number or a trend are computed from the data, and a test breaks the
+  data to check that the wording changes.
+- 13 tests, including a guard that the committed report keeps the structure the script generates.
+
+### Findings
+- Energy closure over the six standard cycles: the worst vehicle-side residual is 1.6e-10 of the energy that
+  flowed, the worst pack-side residual 3.0e-5 (it falls with every halving of the internal step) and the
+  worst chemical-energy mismatch 7.1e-6.
+- The gateway benchmark runs the publisher, server and clients in one Python process, so its 4-client row is
+  slower per client and in aggregate than the 1-client row. The report says this; a multi-process benchmark
+  was not done.
+- With this release the eight Sprint 1 tasks are implemented and their acceptance criteria have tests and
+  documented results. No physical-vehicle validation is claimed.
+
 ## [0.65.0] - 2026-11-12
 
 Sprint 1, part 2 — **the virtual EV on a CAN bus and behind an authenticated, read-only gateway.**
