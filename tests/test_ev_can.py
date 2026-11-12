@@ -290,6 +290,23 @@ class TestFaultInjectionOnTheBus:
         diff = sum(bin(a ^ b).count("1") for a, b in zip(frame.data, got.data))
         assert diff == 1 and got.arbitration_id == frame.arbitration_id
 
+    def test_every_corrupted_frame_of_a_whole_drive_differs_from_the_clean_one_by_exactly_one_bit(self):
+        # The same check the vcan0 test makes, runnable everywhere: a corrupting bus must change one bit per
+        # frame and nothing else (not the identifiers, not the sequence of alive counters).
+        run = _run()
+        ch = _channel()
+        received = []
+        with VirtualCanTransport(ch) as raw_tx, VirtualCanTransport(ch) as rx:
+            tx = ImpairedTransport(raw_tx, corrupt=1.0, seed=1)
+            EVCanPublisher(tx).publish_run(run, after_sample=lambda i, frames: received.extend(
+                rx.recv(timeout=1.0) for _ in frames))
+        reference = EVCanPublisher(tx)                     # only builds frames; the closed transport is never used
+        clean = [f for i in run.sample_indices() for f in reference.frames_for(run, int(i))]
+        assert tx.corrupted == tx.sent == len(received) == len(clean) == 196 * _N_FRAMES_PER_SAMPLE
+        for got, want in zip(received, clean):
+            assert got.arbitration_id == want.arbitration_id
+            assert sum(bin(a ^ b).count("1") for a, b in zip(got.data, want.data)) == 1
+
 
 @pytest.mark.skipif(platform.system() != "Linux", reason="SocketCAN is Linux-only")
 class TestSocketCanDrive:
@@ -338,8 +355,10 @@ class TestSocketCanDrive:
         finally:
             tx.close()
             rx.close()
-        # What a clean publisher would have sent, frame for frame (same deterministic content).
-        clean = [f for i in run.sample_indices() for f in EVCanPublisher(raw).frames_for(run, int(i))]
+        # What a clean publisher would have sent, frame for frame.  One publisher for the whole run, so its
+        # alive counter and transmit count advance exactly as the real one's did.
+        reference = EVCanPublisher(raw)
+        clean = [f for i in run.sample_indices() for f in reference.frames_for(run, int(i))]
         assert tx.corrupted == tx.sent == len(received) == len(clean)
         for got, want in zip(received, clean):
             assert got.arbitration_id == want.arbitration_id
