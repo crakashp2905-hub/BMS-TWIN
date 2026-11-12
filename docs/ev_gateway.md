@@ -2,7 +2,8 @@
 
 Two ways to get a virtual EV's telemetry out of the process: as **CAN frames** on a virtual
 bus, and as an **authenticated, read-only network stream**. Both carry the same drive; a test
-checks that they agree.
+checks that they agree. Measured decode fidelity, throughput and latency are in
+[Virtual EV benchmark results](ev_benchmark.md).
 
 !!! warning "Simulation only"
     The traffic here is simulated, on a virtual interface or a loopback socket. It says nothing

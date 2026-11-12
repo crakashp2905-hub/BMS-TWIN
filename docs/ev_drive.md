@@ -180,7 +180,9 @@ the *parameters* match any real vehicle.
 `run.manifest()` pins the package version, NumPy and SciPy versions, the cycle's fingerprint, a
 hash of the full configuration, the seed, the step, and a SHA-256 digest of every output channel.
 Two runs of the same configuration give bit-identical digests, including from a fresh
-interpreter (tested). Cell-to-cell scatter is seeded.
+interpreter (tested). Cell-to-cell scatter is seeded. The per-cycle results, the convergence with the
+internal step and these reproducibility checks are reported, with the numbers measured, in
+[Virtual EV benchmark results](ev_benchmark.md).
 
 ## Fault injection
 
