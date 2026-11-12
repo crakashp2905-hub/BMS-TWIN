@@ -24,7 +24,7 @@ Top-level imports for convenient one-liner use::
     )
 """
 
-__version__ = "0.64.0"
+__version__ = "0.65.0"
 
 from .afe import AFE, AFEConfig
 from .agent import (
@@ -73,6 +73,7 @@ from .calibration import (
 from .can import BMSCanBus, CanBusMonitor, CANFDFrame, CANFrame, can_checksum
 from .can_transport import (
     CanTransport,
+    ImpairedTransport,
     SocketCanTransport,
     VirtualCanTransport,
     consume_telemetry,
@@ -182,6 +183,14 @@ from .estimation import (
     model_from_file,
     register_soc_estimator,
     soc_estimate,
+)
+from .ev_can import (
+    CanFidelityReport,
+    EVCanBus,
+    EVCanPublisher,
+    PublishStats,
+    decode_frames,
+    verify_against_telemetry,
 )
 from .ev_drive import (
     AuxiliaryLoads,
@@ -424,8 +433,10 @@ __all__ = [
     "expected_calibration_error", "assess_calibration", "CalibrationReport",
     "calibration_scale",
     "run_synthetic_benchmark", "BenchmarkResult", "GroundTruthCell",
-    "CanTransport", "VirtualCanTransport", "SocketCanTransport",
+    "CanTransport", "VirtualCanTransport", "SocketCanTransport", "ImpairedTransport",
     "publish_telemetry", "consume_telemetry",
+    "EVCanBus", "EVCanPublisher", "PublishStats", "CanFidelityReport", "decode_frames",
+    "verify_against_telemetry",
     "Vehicle", "MotorInverter", "PackModel", "DriveResult", "simulate_drive",
     "drive_to_battery_load",
     "DriveCycle", "DriveCycleError", "CycleStats", "available_cycles", "get_cycle",
