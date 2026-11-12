@@ -25,6 +25,7 @@ nav:
   - Aging-model validation: aging_validation.md
   - Virtual EV drive simulation: ev_drive.md
   - Virtual CAN and telemetry gateway: ev_gateway.md
+  - Virtual EV benchmark results: ev_benchmark.md
   - Safety case: safety_case.md
   - Firmware & SIL: firmware.md
 
