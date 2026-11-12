@@ -586,7 +586,7 @@ def _mock_client(handler, **kw):
 class TestClientProtocol:
     EPOCH = "0a0b0c0d"
 
-    def test_backoff_is_exponential_capped_and_resets_on_progress(self):
+    def test_backoff_is_exponential_and_capped(self):
         delays, calls = [], {"n": 0}
 
         def handler(request):
@@ -598,6 +598,58 @@ class TestClientProtocol:
         c = _mock_client(handler, sleep=delays.append, backoff_initial_s=0.5, backoff_max_s=4.0)
         assert [r.seq for r in c.stream()] == [0]
         assert delays == [0.5, 1.0, 2.0, 4.0, 4.0, 4.0] and c.stats.reconnects == 6
+
+    def test_backoff_restarts_from_the_beginning_after_progress(self):
+        # Two failures push the delay up; a connection that delivers data and then drops counts as progress,
+        # so the next delay starts over instead of carrying on growing.
+        plain_hello = f'event: hello\ndata: {{"epoch":"{self.EPOCH}","latest":0,"oldest":0,"schema_version":1}}\n\n'
+        delays, calls = [], {"n": 0}
+
+        def handler(request):
+            calls["n"] += 1
+            if calls["n"] <= 2:
+                return httpx.Response(503)
+            if calls["n"] == 3:
+                return httpx.Response(200, content=_sse_body(plain_hello, _telemetry_event(self.EPOCH, 0)))
+            return httpx.Response(200, content=_sse_body(plain_hello, "event: closed\ndata: {}\n\n"))
+        c = _mock_client(handler, sleep=delays.append, backoff_initial_s=0.5, backoff_max_s=15.0)
+        assert [r.seq for r in c.stream()] == [0]
+        assert delays == [0.5, 1.0, 0.5]
+
+    def test_a_new_epoch_resets_the_duplicate_filter_even_without_a_reset_event(self):
+        # A restarted server should say so with a reset event, but if it does not, the client must not
+        # discard the new server's low-numbered events as duplicates of the old one's.
+        other = "0f0e0d0c"
+        calls = {"n": 0}
+
+        def handler(request):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return httpx.Response(200, content=_sse_body(
+                    _hello(self.EPOCH), *[_telemetry_event(self.EPOCH, n) for n in range(3)]))
+            return httpx.Response(200, content=_sse_body(
+                _hello(other), _telemetry_event(other, 0, _rec(100)), _telemetry_event(other, 1, _rec(101)),
+                "event: closed\ndata: {}\n\n"))
+        c = _mock_client(handler)
+        assert [r.seq for r in c.stream()] == [0, 1, 2, 100, 101]
+        assert c.stats.duplicates_dropped == 0 and c.stats.resets == 0
+
+    def test_a_reset_means_forget_what_you_have_seen(self):
+        # Within one epoch, a reset says the stream restarts here: events numbered lower than ones already
+        # seen are new, not duplicates.
+        calls = {"n": 0}
+
+        def handler(request):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                return httpx.Response(200, content=_sse_body(
+                    _hello(self.EPOCH), *[_telemetry_event(self.EPOCH, n) for n in range(5)]))
+            return httpx.Response(200, content=_sse_body(
+                _hello(self.EPOCH), 'event: reset\ndata: {"reason":"buffer_overrun"}\n\n',
+                _telemetry_event(self.EPOCH, 1, _rec(201)), "event: closed\ndata: {}\n\n"))
+        c = _mock_client(handler)
+        assert [r.seq for r in c.stream()] == [0, 1, 2, 3, 4, 201]
+        assert c.stats.resets == 1 and c.stats.duplicates_dropped == 0
 
     def test_a_server_retry_hint_is_honoured(self):
         delays, calls = [], {"n": 0}
