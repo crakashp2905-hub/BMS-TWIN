@@ -4,6 +4,41 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.65.0] - 2026-11-12
+
+Sprint 1, part 2 — **the virtual EV on a CAN bus and behind an authenticated, read-only gateway.**
+Simulation only: nothing here has been validated against a physical vehicle or network.
+
+### Added
+- **`bms/ev_can.py`**: publishes a drive as the existing BMS CAN frames (status, cell extrema,
+  thermal, three SOP horizons, health) over a virtual or SocketCAN transport, and decodes the
+  traffic independently with `cantools` and the shipped `bms.dbc`. On UDDS, HWFET and US06 (2,737
+  samples, 19,159 frames, none missing) every signal decodes to within half its quantization step.
+  The 16-bit SOP power field saturates at 65,535 W for the default pack; this is counted, not hidden.
+- **`bms.ImpairedTransport`**: seeded drop / duplicate / bit-flip / silence for any CAN transport.
+- **`bms/gateway.py`**: an HTTP gateway streaming telemetry as Server-Sent Events. HMAC-SHA256 bearer
+  tokens (expiry, scope, revocation, key rotation, 32-byte minimum secret, constant-time checks,
+  canonical encoding), GET-only enforced before routing, failure throttling, a per-subject stream
+  cap, and resumable streams (`Last-Event-ID`, with explicit `reset` events when data cannot be
+  replayed). Includes a reconnecting `TelemetryClient`, `DriveFeeder`, `GatewayServer` and a CLI.
+- State-of-power limits are recorded at telemetry instants (`DriveRun.sop_at`).
+- The `socketcan` CI job also runs a full UDDS drive over `vcan0`.
+- 173 tests, including real-socket fault injection (cut, stalled and redirected connections)
+  and end-to-end checks that the CAN output and the gateway stream agree with the simulation.
+- `docs/ev_gateway.md`.
+
+### Not in this release
+- Documented benchmark results (throughput, latency): the remaining Sprint 1 item.
+- TLS inside the gateway, durable token revocation and multi-process hubs (see the doc).
+
+### Verification
+- A mutation check applied 23 deliberate bugs to the gateway one at a time and the tests catch all 23. The
+  first run caught 18; three client tests were added for the three survivors and one mutation target was
+  corrected.
+- The vcan tests cannot run on the development machine (Windows); the `socketcan` CI job is their check.
+  It caught a bug in one of them (a reference-frame error in the test itself), now fixed and covered by a
+  version of the same check that runs on every platform.
+
 ## [0.64.0] - 2026-11-12
 
 Sprint 1, part 1 — **a virtual EV that follows standardized drive cycles.** Simulation only: nothing here
