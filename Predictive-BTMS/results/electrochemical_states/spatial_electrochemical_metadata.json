@@ -1,0 +1,175 @@
+{
+    "Cell_Voltage": {
+        "pybamm_variable": "Voltage [V]",
+        "shape": [
+            160
+        ],
+        "dimensions": 1,
+        "units": "V",
+        "time_axis": 0,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Cell_Current": {
+        "pybamm_variable": "Current [A]",
+        "shape": [
+            160
+        ],
+        "dimensions": 1,
+        "units": "A",
+        "time_axis": 0,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Discharge_Capacity": {
+        "pybamm_variable": "Discharge capacity [A.h]",
+        "shape": [
+            160
+        ],
+        "dimensions": 1,
+        "units": "A.h",
+        "time_axis": 0,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Cell_Temperature": {
+        "pybamm_variable": "Volume-averaged cell temperature [K]",
+        "shape": [
+            160
+        ],
+        "dimensions": 1,
+        "units": "K",
+        "time_axis": 0,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Negative_Electrode_Potential": {
+        "pybamm_variable": "Negative electrode potential [V]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "V",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Positive_Electrode_Potential": {
+        "pybamm_variable": "Positive electrode potential [V]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "V",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Electrolyte_Potential": {
+        "pybamm_variable": "Electrolyte potential [V]",
+        "shape": [
+            60,
+            160
+        ],
+        "dimensions": 2,
+        "units": "V",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Negative_Electrode_Surface_Potential_Difference": {
+        "pybamm_variable": "Negative electrode surface potential difference [V]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "V",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Negative_Particle_Surface_Concentration": {
+        "pybamm_variable": "Negative particle surface concentration [mol.m-3]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "mol.m-3",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Negative_Particle_Average_Concentration": {
+        "pybamm_variable": "Negative particle concentration [mol.m-3]",
+        "shape": [
+            20,
+            20,
+            160
+        ],
+        "dimensions": 3,
+        "units": "mol.m-3",
+        "time_axis": 2,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Positive_Particle_Surface_Concentration": {
+        "pybamm_variable": "Positive particle surface concentration [mol.m-3]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "mol.m-3",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Electrolyte_Concentration": {
+        "pybamm_variable": "Electrolyte concentration [mol.m-3]",
+        "shape": [
+            60,
+            160
+        ],
+        "dimensions": 2,
+        "units": "mol.m-3",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Negative_Interfacial_Current_Density": {
+        "pybamm_variable": "Negative electrode interfacial current density [A.m-2]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "A.m-2",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Positive_Interfacial_Current_Density": {
+        "pybamm_variable": "Positive electrode interfacial current density [A.m-2]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "A.m-2",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Negative_Electrode_Overpotential": {
+        "pybamm_variable": "Negative electrode reaction overpotential [V]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "V",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    },
+    "Positive_Electrode_Overpotential": {
+        "pybamm_variable": "Positive electrode reaction overpotential [V]",
+        "shape": [
+            20,
+            160
+        ],
+        "dimensions": 2,
+        "units": "V",
+        "time_axis": 1,
+        "array_order": "Original PyBaMM entries order"
+    }
+}

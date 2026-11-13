@@ -1,0 +1,101 @@
+{
+  "adapter": "MODEL_01_ADAPTER",
+  "adapter_version": "1.0.0",
+  "packet_id": "MODEL01_DIRECT_PATH_SYNTHETIC_TEST_001",
+  "adapter_status": "PASSED_TO_MODEL",
+  "model_evaluated": true,
+  "interface_validation": {
+    "valid": true,
+    "warnings": [
+      "estimated_states[0]: SOC is not independent of current integration; do not use for rest-loss inference",
+      "cell_parameters[0]: quality=UNKNOWN; do not use as trusted evidence without model-specific policy"
+    ],
+    "counts": {
+      "measurements": 3,
+      "estimated_states": 1,
+      "cell_parameters": 1
+    },
+    "enabled_models": [
+      "model_01"
+    ]
+  },
+  "model_output": {
+    "model_id": "INTERNAL_MICRO_SHORT",
+    "model_version": "1.0.0-final-reference",
+    "overall_status": "COMPLETED",
+    "assessments": {
+      "direct_path_assessment": {
+        "model_id": "INTERNAL_MICRO_SHORT",
+        "model_version": "1.0.0-final-reference",
+        "status": "EVALUATED",
+        "conclusion": "DIRECTLY_OBSERVED_DISSIPATIVE_PATH; INTERNAL_MICRO_SHORT_ORIGIN_NOT_CONFIRMED",
+        "identifiability": "PATH_VOLTAGE_CURRENT_AND_EQUIVALENT_DISSIPATION_IDENTIFIABLE",
+        "findings": [
+          "Voltage and current were supplied for the same identified physical path.",
+          "The measured path is dissipative; its physical origin is not established."
+        ],
+        "calculated": {
+          "path_resistance_ohm": 20.0,
+          "path_power_w": 0.002,
+          "observation_duration_s": 10.0,
+          "path_energy_j": 0.02,
+          "effective_path_volume_m3": null,
+          "path_heat_density_w_m3": null
+        },
+        "uncertainty": {
+          "path_resistance_standard_uncertainty_ohm": 0.22360679774997896,
+          "path_power_standard_uncertainty_w": 2.2360679774997898e-05,
+          "path_energy_standard_uncertainty_j": 0.00022360679774997898,
+          "propagation": "First-order, independent voltage/current uncertainties."
+        },
+        "heat": {
+          "status": "IDENTIFIED_PATH_DISSIPATION",
+          "power_w": 0.002,
+          "energy_j": 0.02,
+          "heat_density_w_m3": null,
+          "interpretation": "Path dissipation only. Heat density uses supplied effective path volume and is not cell-average heat or a hotspot prediction."
+        },
+        "required_evidence": [],
+        "limitations": [
+          "A measured conductive path is not, by itself, proof of an internal battery micro-short.",
+          "The path voltage must be measured across, and path current through, the same physical path.",
+          "Local hotspot temperature requires a spatial electrical-thermal model and geometry."
+        ]
+      },
+      "indirect_rest_assessment": {
+        "model_id": "INTERNAL_MICRO_SHORT",
+        "model_version": "1.0.0-final-reference",
+        "status": "INSUFFICIENT_DATA",
+        "conclusion": "NO_MICRO_SHORT_DIAGNOSIS",
+        "identifiability": "NOT_IDENTIFIABLE",
+        "findings": [
+          "No indirect rest-window block supplied."
+        ],
+        "calculated": {},
+        "uncertainty": {},
+        "heat": {
+          "status": "UNAVAILABLE"
+        },
+        "required_evidence": [
+          "rest_window.samples",
+          "independent SOC endpoints",
+          "validated capacity",
+          "matched healthy baseline self-discharge rate",
+          "rest protocol limits"
+        ],
+        "limitations": [
+          "Ordinary terminal voltage/current/temperature/SOC/SOH alone do not uniquely identify a local internal micro-short.",
+          "No missing quantity is silently replaced with zero."
+        ]
+      }
+    },
+    "global_limitations": [
+      "This model assesses directly observed path dissipation and/or excess rest-period charge loss.",
+      "Neither route alone uniquely confirms a local internal micro-short.",
+      "No diagnosis is made from ordinary BMS voltage/current/temperature/SOC/SOH alone.",
+      "No local hotspot temperature is predicted.",
+      "Research/reference implementation; not safety-certified or experimentally validated for a specific cell."
+    ]
+  },
+  "note": "Explicit model-specific evidence passed to frozen Model 01."
+}

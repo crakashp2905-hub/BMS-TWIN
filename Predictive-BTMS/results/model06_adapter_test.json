@@ -1,0 +1,110 @@
+{
+  "adapter": "MODEL_06_ADAPTER",
+  "adapter_version": "1.0.0",
+  "packet_id": "MODEL06_ABNORMAL_CONTACT_RESISTANCE_TEST_001",
+  "adapter_status": "PASSED_TO_MODEL",
+  "model_evaluated": true,
+  "interface_validation": {
+    "valid": true,
+    "warnings": [],
+    "counts": {
+      "measurements": 0,
+      "estimated_states": 0,
+      "cell_parameters": 0
+    },
+    "enabled_models": [
+      "model_06"
+    ]
+  },
+  "adapter_warnings": [
+    "Contact voltage must be measured directly across the identified joint; terminal cell or pack voltage is not a substitute.",
+    "Current must be measured in the same electrical path and time-aligned with the contact-voltage measurement.",
+    "A four-wire/Kelvin measurement is preferred; the healthy reference must match temperature, current direction, ageing, clamping force and geometry.",
+    "Incremental contact heat is local to the identified contact and is not cell bulk heat or a cell hotspot prediction."
+  ],
+  "model_output": {
+    "model": "MODEL_06_ABNORMAL_CONTACT_RESISTANCE",
+    "version": "1.0.0-reference",
+    "contact_id": "PACK_POSITIVE_BUSBAR_JOINT",
+    "status": "ABNORMAL_CONTACT_RESISTANCE_RESOLVED",
+    "interpretation": "Mean contact resistance exceeds the matched healthy reference beyond the approximate 95% uncertainty interval.",
+    "valid_samples": 4,
+    "rejected_samples": 0,
+    "temperature_mean_C": 30.575,
+    "temperature_span_C": 1.0,
+    "healthy_reference_resistance_ohm": 0.0002,
+    "healthy_reference_resistance_sigma_ohm": 1e-05,
+    "mean_measured_contact_resistance_ohm": 0.00031999999999999997,
+    "minimum_measured_contact_resistance_ohm": 0.00031999999999999997,
+    "maximum_measured_contact_resistance_ohm": 0.00032,
+    "mean_excess_resistance_ohm": 0.00011999999999999999,
+    "mean_excess_resistance_approx_95pct_interval_ohm": [
+      0.00010955543062171647,
+      0.00013044456937828352
+    ],
+    "samples_resolved_above_reference": 4,
+    "mean_contact_power_W": 0.076,
+    "mean_incremental_contact_heat_power_W": 0.028499999999999998,
+    "integrated_contact_energy_J": 2.52,
+    "integrated_incremental_contact_heat_J": 0.945,
+    "sample_results": [
+      {
+        "time_s": 0.0,
+        "current_A": 10.0,
+        "contact_voltage_drop_V": 0.0032,
+        "contact_resistance_ohm": 0.00032,
+        "contact_resistance_sigma_ohm": 5.040793588315237e-06,
+        "contact_power_W": 0.032,
+        "contact_power_sigma_W": 0.0005040793588315237,
+        "excess_resistance_vs_reference_ohm": 0.00012000000000000002,
+        "excess_resistance_sigma_ohm": 1.1198642774908039e-05,
+        "incremental_contact_heat_power_W": 0.012000000000000002
+      },
+      {
+        "time_s": 10.0,
+        "current_A": 15.0,
+        "contact_voltage_drop_V": 0.0048,
+        "contact_resistance_ohm": 0.00031999999999999997,
+        "contact_resistance_sigma_ohm": 3.3605290588768244e-06,
+        "contact_power_W": 0.072,
+        "contact_power_sigma_W": 0.0007561190382472855,
+        "excess_resistance_vs_reference_ohm": 0.00011999999999999996,
+        "excess_resistance_sigma_ohm": 1.054955712603878e-05,
+        "incremental_contact_heat_power_W": 0.026999999999999993
+      },
+      {
+        "time_s": 20.0,
+        "current_A": 20.0,
+        "contact_voltage_drop_V": 0.0064,
+        "contact_resistance_ohm": 0.00032,
+        "contact_resistance_sigma_ohm": 2.5203967941576185e-06,
+        "contact_power_W": 0.128,
+        "contact_power_sigma_W": 0.0010081587176630474,
+        "excess_resistance_vs_reference_ohm": 0.00012000000000000002,
+        "excess_resistance_sigma_ohm": 1.0312729997435209e-05,
+        "incremental_contact_heat_power_W": 0.04800000000000001
+      },
+      {
+        "time_s": 30.0,
+        "current_A": 15.0,
+        "contact_voltage_drop_V": 0.0048,
+        "contact_resistance_ohm": 0.00031999999999999997,
+        "contact_resistance_sigma_ohm": 3.3605290588768244e-06,
+        "contact_power_W": 0.072,
+        "contact_power_sigma_W": 0.0007561190382472855,
+        "excess_resistance_vs_reference_ohm": 0.00011999999999999996,
+        "excess_resistance_sigma_ohm": 1.054955712603878e-05,
+        "incremental_contact_heat_power_W": 0.026999999999999993
+      }
+    ],
+    "limitations": [
+      "The voltage measurement must span the identified contact itself; pack terminal voltage is not a substitute.",
+      "Four-wire/Kelvin sensing and synchronised current measurement are strongly preferred.",
+      "The healthy reference must be matched for temperature, current, direction, ageing, contact pressure and geometry.",
+      "First-order uncertainty propagation assumes independent voltage/current/reference uncertainties.",
+      "The incremental heat is calculated at the contact and does not predict cell temperature rise or hotspot temperature.",
+      "No automatic correction for thermoelectric offsets, lead resistance or current reversal is performed."
+    ]
+  },
+  "note": "Native Model 06 payload passed unchanged. Contact resistance is evaluated from voltage drop across the identified contact and current through the same path."
+}
