@@ -1,0 +1,50 @@
+{
+  "contact": {
+    "contact_id": "PACK_POSITIVE_BUSBAR_JOINT",
+    "minimum_current_for_resistance_A": 0.5,
+    "maximum_temperature_span_C": 3.0,
+    "healthy_reference": {
+      "resistance_ohm": 0.0002,
+      "resistance_sigma_ohm": 1e-05,
+      "temperature_C": 30.0
+    }
+  },
+  "samples": [
+    {
+      "time_s": 0,
+      "current_A": 10.0,
+      "contact_voltage_drop_V": 0.0032,
+      "current_sigma_A": 0.02,
+      "voltage_sigma_V": 5e-05,
+      "contact_temperature_C": 30.0,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 10,
+      "current_A": 15.0,
+      "contact_voltage_drop_V": 0.0048,
+      "current_sigma_A": 0.02,
+      "voltage_sigma_V": 5e-05,
+      "contact_temperature_C": 30.5,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 20,
+      "current_A": 20.0,
+      "contact_voltage_drop_V": 0.0064,
+      "current_sigma_A": 0.02,
+      "voltage_sigma_V": 5e-05,
+      "contact_temperature_C": 31.0,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 30,
+      "current_A": 15.0,
+      "contact_voltage_drop_V": 0.0048,
+      "current_sigma_A": 0.02,
+      "voltage_sigma_V": 5e-05,
+      "contact_temperature_C": 30.8,
+      "quality": "GOOD"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "adapter": "MODEL_01_ADAPTER",
+  "adapter_version": "1.0.0",
+  "packet_id": "PACKET_DEMO_0001",
+  "adapter_status": "INSUFFICIENT_DATA",
+  "reason": "model_evidence.model_01 is not enabled",
+  "required_evidence": [
+    "Explicit model_evidence.model_01.payload",
+    "GOOD model_01 provenance",
+    "Direct path measurements and/or independent rest-window evidence"
+  ],
+  "model_evaluated": false
+}

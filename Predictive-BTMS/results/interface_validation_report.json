@@ -1,0 +1,16 @@
+{
+  "valid": true,
+  "warnings": [
+    "estimated_states[0]: SOC is not independent of current integration; do not use for rest-loss inference",
+    "cell_parameters[0]: quality=UNKNOWN; do not use as trusted evidence without model-specific policy"
+  ],
+  "counts": {
+    "measurements": 3,
+    "estimated_states": 1,
+    "cell_parameters": 1
+  },
+  "enabled_models": [],
+  "interface_version": "1.0.0",
+  "packet_id": "PACKET_DEMO_0001",
+  "model_payloads_ready": []
+}

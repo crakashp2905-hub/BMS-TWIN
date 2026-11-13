@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "packet_id": "MODEL03_SEI_GROWTH_TEST_001",
+  "cell": {
+    "cell_id": "SYNTHETIC-LFP-001",
+    "chemistry": "LFP_GRAPHITE"
+  },
+  "acquisition": {
+    "session_id": "MODEL03-SYNTHETIC-TEST-001",
+    "started_at_utc": "2026-11-13T12:00:00Z"
+  },
+  "measurements": [],
+  "estimated_states": [],
+  "cell_parameters": [],
+  "model_evidence": {
+    "model_03": {
+      "enabled": true,
+      "provenance": {
+        "source": "SYNTHETIC_TEST_FIXTURE",
+        "acquisition_method": "CONTROLLED_SOFTWARE_TEST",
+        "timestamp_utc": "2026-11-13T12:00:00Z",
+        "quality": "GOOD",
+        "notes": "Synthetic parameterised SEI-growth adapter integration test."
+      },
+      "payload": {
+        "model": "sei_growth",
+        "parameters": {
+          "initial_thickness_m": 2e-08,
+          "parabolic_rate_ref_m2_s": 2e-22,
+          "activation_energy_J_mol": 35000.0,
+          "reference_temperature_K": 298.15,
+          "active_area_m2": 0.18,
+          "sei_ionic_conductivity_S_m": 1e-06,
+          "sei_capacity_per_volume_Ah_m3": 200000000.0,
+          "nominal_capacity_Ah": 2.3
+        },
+        "samples": [
+          {
+            "time_s": 0,
+            "temperature_K": 298.15,
+            "current_A": 0.0,
+            "quality": "GOOD"
+          },
+          {
+            "time_s": 3600,
+            "temperature_K": 303.15,
+            "current_A": 1.15,
+            "quality": "GOOD"
+          },
+          {
+            "time_s": 7200,
+            "temperature_K": 308.15,
+            "current_A": 1.15,
+            "quality": "GOOD"
+          },
+          {
+            "time_s": 10800,
+            "temperature_K": 303.15,
+            "current_A": 0.0,
+            "quality": "GOOD"
+          }
+        ]
+      }
+    }
+  }
+}
