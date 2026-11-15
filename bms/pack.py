@@ -22,10 +22,42 @@ Pack-level quantities
 
 Parallel-group physics
 ----------------------
-Within each parallel group the group current is split among cells inversely
-proportional to their effective DC resistance (conductance-weighted), which is
-a good approximation when cell voltages are close.  The group terminal voltage
-is the mean of individual cell terminal voltages.
+The cells of a parallel group share one terminal node.  The group current is
+split by solving that node, ``I_i = (e_i − V)/R0_i`` with
+``e_i = OCV_i − V_RC1_i − V_RC2_i`` and ``Σ I_i = I_group``, so cells at
+different SOC exchange circulating currents (``I_i ≠ 0`` even at
+``I_group = 0``).  The group terminal voltage is the voltage of that node,
+``V = (Σ e_i/R0_i − I_group) / Σ 1/R0_i``.  A group of identical cells splits
+the current equally and is exactly one equivalent cell (``R/n``, ``C·n``,
+``Q·n``).
+
+Static OCV hysteresis
+---------------------
+A chemistry's static hysteresis (``OCVSOC.hysteresis_v``, 8 mV for the default
+NMC) lowers the OCV on discharge and raises it on charge,
+``−hysteresis_v·sign(I)``, and vanishes at zero current.  ``SecondOrderECM``
+applies it with the sign of its own current.  A series group reports its
+voltage the same way for every ``n_parallel``:
+
+* Under load (``step()["v_cells"]``, ``terminal_voltage(..., group_current)``)
+  the offset follows the sign of the *group* current.  For ``n_parallel = 1``
+  that is the cell model exactly; for identical parallel cells, which share the
+  current equally, it is the equivalent cell exactly (what the vectorized
+  ``bms.pack_coupling.VehiclePack`` computes).
+* At rest (``cell_voltages()``, ``pack_voltage()``) there is no offset.
+* The offset shifts only the reported voltage.  It is not part of the EMFs that
+  share the current, so SOC, RC states and circulating currents do not depend
+  on it.
+* Approximation: the sign is the group current's, not each cell's.  When the
+  cells of a group circulate current of both signs (strongly mismatched SOC at
+  a small group current), a cell whose own current runs against the group's
+  would see the opposite offset in the cell model; this is not resolved per
+  cell.
+* A cell with a dynamic ``PlettHysteresis`` model gets no static offset (that
+  model replaces it in ``SecondOrderECM``), but its own hysteresis voltage is
+  not included in ``terminal_voltage()`` or in ``step()`` for
+  ``n_parallel > 1``.  Only ``step()`` of a single-cell group, which delegates
+  to the cell, includes it.
 
 Chemistry
 ---------
@@ -52,8 +84,9 @@ _trapz = getattr(np, "trapezoid", getattr(np, "trapz", None))
 class _ParallelGroup:
     """n_parallel cells connected in parallel, exposed as one series node.
 
-    All cells share the same terminal voltage (approximately).  Group current
-    is split by conductance weighting (1/R0_i at operating temperature).
+    The cells share one terminal node: the group current is split by solving it
+    (see :meth:`step`), and the reported voltage carries the static OCV
+    hysteresis offset like a single cell does (see the module docstring).
     """
 
     def __init__(self, cells: list[SecondOrderECM]) -> None:
@@ -106,12 +139,22 @@ class _ParallelGroup:
         )
 
     # ── Shared-node solve ────────────────────────────────────────────
-    def _emf_and_conductance(self, ocv_curve: OCVSOC,
-                             temperature_C: float) -> tuple[np.ndarray, np.ndarray]:
+    def _emf_and_conductance(self, ocv_curve: OCVSOC, temperature_C: float,
+                             group_current: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
         """Per-cell open terminal EMF ``e_i = OCV_i − V_RC1_i − V_RC2_i`` [V]
-        and DC conductance ``g_i = 1/R0_i(T)`` [S]."""
+        and DC conductance ``g_i = 1/R0_i(T)`` [S].
+
+        ``OCV_i`` is evaluated at ``group_current``, so a static-hysteresis curve
+        contributes ``−hysteresis_v·sign(group_current)`` to every cell, as
+        :meth:`SecondOrderECM.step` does for a single cell.  The default ``0.0``
+        gives the hysteresis-free EMFs that share the current between the cells
+        (a common offset would cancel in ``e_i − V`` anyway).  A cell carrying a
+        dynamic ``PlettHysteresis`` model is evaluated at zero current: in the
+        cell model that term replaces the static one, so the two are never added.
+        """
         e = np.array([
-            float(ocv_curve.ocv(c.soc, T_C=temperature_C)) - c.v_rc1 - c.v_rc2
+            float(ocv_curve.ocv(c.soc, group_current if c.hysteresis is None else 0.0,
+                                T_C=temperature_C)) - c.v_rc1 - c.v_rc2
             for c in self.cells
         ])
         g = np.array([
@@ -128,12 +171,16 @@ class _ParallelGroup:
 
         Parallel cells physically share one terminal node, so their voltage is
         found from the shared-node balance ``Σ (e_i − V)/R0_i = I_group`` rather
-        than by averaging independent per-cell voltages.  With
-        ``group_current = 0`` (the default, used for measurement) this reduces
-        to the conductance-weighted mean EMF, and for ``n_parallel = 1`` to
-        ``OCV − V_RC1 − V_RC2`` exactly.
+        than by averaging independent per-cell voltages.  Under load the EMFs
+        carry the static hysteresis offset ``−hysteresis_v·sign(group_current)``
+        (see :meth:`_emf_and_conductance`), so the result is the voltage
+        :meth:`SecondOrderECM.step` returns for a single cell (``n_parallel = 1``)
+        or for the equivalent cell of identical parallel cells.  With
+        ``group_current = 0`` (the default, used for measurement) there is no
+        offset: this reduces to the conductance-weighted mean EMF, and for
+        ``n_parallel = 1`` to ``OCV − V_RC1 − V_RC2`` exactly.
         """
-        e, g = self._emf_and_conductance(ocv_curve, temperature_C)
+        e, g = self._emf_and_conductance(ocv_curve, temperature_C, group_current)
         return float((np.dot(e, g) - group_current) / g.sum())
 
     # ── Time step ────────────────────────────────────────────────────
@@ -147,14 +194,18 @@ class _ParallelGroup:
         on each cell's EMF, cells at different SOC exchange **circulating
         currents** (``Σ I_i = I_group`` yet individual ``I_i ≠ 0`` even when
         ``I_group = 0``) — which the previous pure-conductance split ignored.
-        Returns the post-step common-node terminal voltage.
+        Returns the post-step common-node terminal voltage, including the static
+        hysteresis offset for the sign of ``group_current`` (see
+        :meth:`terminal_voltage`).  That offset shifts only the returned voltage:
+        it is kept out of the EMFs that share the current, so the split, the
+        SOC and the RC states do not depend on it.
         """
         n = self.n_parallel
         if n == 1:
             return self.cells[0].step(group_current, dt, temperature_C)
 
         ocv_curve = self.cells[0].ocv_curve
-        e, g = self._emf_and_conductance(ocv_curve, temperature_C)
+        e, g = self._emf_and_conductance(ocv_curve, temperature_C)   # hysteresis-free: shares the current
         v_common = (np.dot(e, g) - group_current) / g.sum()
         cell_currents = (e - v_common) * g          # Σ = group_current (KCL)
 
@@ -317,6 +368,10 @@ class BatteryPack:
     def cell_voltages(self, temperatures_C: np.ndarray | None = None) -> np.ndarray:
         """Instantaneous terminal voltage of each series group [V].
 
+        Evaluated at zero current: the EMF ``OCV − V_RC1 − V_RC2`` with no ohmic
+        drop and no static hysteresis offset.  The voltage under load is
+        ``step(...)["v_cells"]``.
+
         Parameters
         ----------
         temperatures_C : (n_cells,) array, optional
@@ -347,6 +402,14 @@ class BatteryPack:
             Length must equal ``n_cells`` (n_series groups).
         cell_temperatures_C : (n_cells,) array, optional
             Per-group temperature [°C].  Defaults to 25 °C.
+
+        Returns
+        -------
+        dict
+            ``v_cells`` — post-step terminal voltage of each series group under
+            load [V], including the static hysteresis offset for the sign of the
+            group current (see the module docstring); ``v_pack`` — their sum;
+            ``soc`` — per-group SOC.
         """
         n_s = len(self._groups)
         bal = (np.zeros(n_s) if balancing_currents is None

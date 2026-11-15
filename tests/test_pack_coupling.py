@@ -45,10 +45,12 @@ class TestEquivalenceWithTheCellModel:
         assert worst_v < 1e-9 and worst_soc < 1e-12
 
     def test_parallel_groups_match_batterypack(self):
-        # BatteryPack reports parallel-group voltage without the static hysteresis offset
-        # (its single-cell path includes it), so compare with hysteresis off.
-        spec = _small(n_parallel=3, hysteresis_v=0.0)
+        # The chemistry-default static hysteresis is on (8 mV per group for NMC).  A BatteryPack group applies it
+        # like the single-cell path and like this vectorized pack (by the sign of the group current), so the two
+        # agree.  The cells are identical, which is what makes a parallel group one equivalent cell.
+        spec = _small(n_parallel=3)
         vp = VehiclePack(spec, soc0=0.8)
+        assert vp.ocv_curve.hysteresis_v > 0.0                 # the offset under test is really there
         bp = bms.BatteryPack(
             bms.PackConfig(n_cells=4, n_parallel=3, nominal_capacity_Ah=3.0, capacity_sigma=0.0, r0_sigma=0.0,
                            initial_soc_mean=0.8, initial_soc_sigma=0.0),
