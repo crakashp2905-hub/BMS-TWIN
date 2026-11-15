@@ -17,8 +17,10 @@ reproducible, fully-tested framework where every module is independently usable.
   <img alt="dashboard" src="https://img.shields.io/badge/dashboard-Streamlit-ff4b4b">
 </p>
 
-> **Status.** ✅ 562/562 unit tests pass • 69 library modules • 7 chemistries • ruff-clean •
-> CI on Python 3.10–3.13 • Streamlit dashboard + EV range predictor + executed demo notebook.
+> **Status.** ✅ 1,008 tests pass • 74 library modules • 7 chemistries • ruff-clean •
+> CI on Python 3.10–3.13 plus a Linux SocketCAN job • Streamlit dashboard + EV range predictor +
+> virtual-EV drive simulation, CAN output and telemetry gateway (simulation only, not validated
+> against a physical vehicle).
 
 ---
 
@@ -68,6 +70,17 @@ reproducible, fully-tested framework where every module is independently usable.
   loads.
 - **State of Power + CAN telemetry** — multi-horizon (2 s / 10 s / 30 s) traction/regen limits and
   DBC-compatible classic-CAN broadcast frames.
+- **Virtual EV on standardized drive cycles** — a forward-dynamics vehicle (driver, motor and
+  inverter losses, regeneration blended with friction brakes, auxiliary loads) drawing from a pack
+  model that respects current, voltage, power, SOC and temperature limits, with an energy ledger that
+  closes (vehicle side ~1e-10, pack side ~3e-5 of the energy that flowed). It replays the bundled EPA
+  UDDS / HWFET / US06 and UN/ECE ECE-15 / EUDC cycles or any custom speed profile and emits
+  timestamped telemetry (`docs/ev_drive.md`, `docs/ev_benchmark.md`). **Simulation only:** its
+  parameters are generic and it has not been validated against a physical vehicle.
+- **Virtual CAN output and a telemetry gateway** — the same drive published as the existing
+  DBC-compatible frames over a virtual bus or Linux SocketCAN (decoded independently with `cantools`
+  and the shipped `bms.dbc`), and streamed over an authenticated, read-only, resumable HTTP gateway
+  with a reconnecting client (`docs/ev_gateway.md`; no TLS in process — put it behind a proxy).
 - **Interpretability layer** — plain-language state/charge summaries (optionally LLM-narrated,
   provider-agnostic), named RandomForest feature importances, multi-estimator agreement +
   inverse-variance fusion, and SoC ±kσ bands.
@@ -87,8 +100,9 @@ reproducible, fully-tested framework where every module is independently usable.
   the box: coulomb-counting hits **0.64% SoC RMSE** on a real B0005 discharge, and real capacity
   fade is recovered across four cells (`scripts/validate_nasa.py`, `docs/validation.md`; a ~20 KB
   real fixture is committed so CI exercises it too).
-- **Reproducible & tested** — every randomness source is seeded; 562 unit tests; pip-installable
-  with GitHub Actions CI (ruff-blocking + 90% coverage gate).
+- **Reproducible & tested** — every randomness source is seeded; 1,008 tests; pip-installable
+  with GitHub Actions CI (ruff-blocking + 90% coverage gate); a simulated drive reproduces
+  bit-for-bit, including from a fresh interpreter.
 
 ---
 
@@ -411,7 +425,7 @@ the analog front-end (estimator-ranking shift), and thermal-runaway propagation.
 ## Testing
 
 ```bash
-pytest -q                                  # 562 tests, ~30 s
+pytest -q                                  # 1,008 tests (a few minutes; includes real-socket gateway tests)
 pytest --cov=bms --cov-fail-under=85       # coverage gate (CI enforces ≥ 85%; currently 90%)
 ruff check .                               # lint — blocking in CI
 ```
@@ -420,16 +434,21 @@ Covers OCV/ECM correctness and parameter recovery, pack/parallel bookkeeping, th
 balancer energy monotonicity, estimator accuracy + the model-agnostic contract, online SoH
 convergence, charging/aging behaviour, fault trip authority, supervisor transitions + SoH-aware
 limiting, precharge, passport, SoP, CAN round-trips, DVA/ICA/EIS invariants, interpretability, and
-range-predictor energy conservation.
+range-predictor energy conservation. The virtual-EV work adds energy-balance, reproducibility,
+plausibility and fault-injection tests (weak cells, thermal events, a lossy CAN bus, cut and stalled
+network connections), and the Linux CI job runs a full drive over a real `vcan0` interface.
 
 ---
 
 ## Roadmap
 
-- **Real data** — loaders + an estimator leaderboard ship in `bms/datasets.py`; drop in the
-  LG-18650 / NASA PCoE files (see `DATASET_SOURCES`) and it runs unchanged.
-- **Online resistance SoH** — estimate R₀ growth alongside capacity.
-- **Dashboard expansion** — surface charging, aging, online SoH, SoP, and interpretability.
+- **More real data** — NASA PCoE is validated out of the box and the Oxford dataset was used for a
+  cross-dataset aging test (`docs/aging_validation.md`); more datasets (e.g. CALCE) are not yet used.
+- **Aging across datasets** — fitted fade models do not yet transfer between datasets; a
+  covariate-aware model (temperature, throughput, C-rate) is the open problem.
+- **Vehicle validation** — the virtual EV is checked for internal consistency and plausibility only;
+  comparing it with measured vehicle data is not done.
+- **Gateway hardening** — TLS in process, durable token revocation and multi-process hubs.
 - **Publish to PyPI**; add rendered API docs.
 
 ---
