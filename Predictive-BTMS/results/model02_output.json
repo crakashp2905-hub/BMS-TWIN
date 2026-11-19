@@ -1,0 +1,57 @@
+{
+  "model": "MODEL_02_LITHIUM_PLATING",
+  "version": "1.0.0-reference",
+  "overall_status": "ELECTROCHEMICAL_PLATING_CONDITION_INDICATED",
+  "direct_anode_potential_assessment": {
+    "status": "EVALUATED",
+    "criterion": "negative-electrode potential vs Li/Li+ during positive-current charging",
+    "threshold_V_vs_Li": 0.0,
+    "valid_samples": 6,
+    "rejected_samples": 0,
+    "minimum_potential_V": -0.002,
+    "mean_potential_V": 0.011000000000000001,
+    "samples_at_or_below_threshold": 1,
+    "samples_near_threshold": 4,
+    "fraction_samples_at_or_below_threshold": 0.16666666666666666,
+    "mean_probability_potential_at_or_below_threshold": 0.15690299798832,
+    "estimated_time_at_or_below_threshold_s": 0.0,
+    "estimated_time_near_threshold_s": 40.0,
+    "interpretation": "Electrochemical plating condition indicated: anode potential reached/crossed threshold.",
+    "limitations": [
+      "Potential threshold is a thermodynamic indicator, not a direct plated-lithium mass measurement.",
+      "Anode potential must be independently measured or produced by a validated electrochemical observer.",
+      "Sampling rate, sensor/observer bias, spatial gradients and cell chemistry affect interpretation.",
+      "This result does not establish plating morphology, quantity, reversibility or safety."
+    ]
+  },
+  "operating_condition_screen": {
+    "status": "EVALUATED",
+    "screen_score_0_to_1": 0.48250000000000004,
+    "screen_score_is_probability": false,
+    "contributing_condition_scores": {
+      "temperature": 0.6,
+      "soc": 0.45,
+      "crate": 0.3333333333333333
+    },
+    "observed_min_temperature_C": 8.0,
+    "observed_max_soc_pct": 89.0,
+    "observed_max_charge_rate_C": 1.0,
+    "valid_charging_samples": 6,
+    "interpretation": "Some plating-favourable operating conditions are present; this does not confirm plating.",
+    "limitations": [
+      "Breakpoints and weights are configurable screening assumptions, not universal cell limits.",
+      "Risk depends on chemistry, electrode design, ageing, pressure, charge history and cell-specific kinetics.",
+      "The score is not a calibrated probability and must not be used as a safety trip threshold."
+    ]
+  },
+  "post_charge_stripping_feature": {
+    "status": "NOT_EVALUATED",
+    "reason": "No paired candidate/reference rest traces supplied."
+  },
+  "global_limitations": [
+    "No plated-lithium mass, morphology or local deposition map is inferred.",
+    "A condition screen is not a plating detector.",
+    "Do not substitute terminal voltage for anode potential vs Li/Li+.",
+    "Cell-specific calibration and validation against reference methods are required before deployment."
+  ]
+}

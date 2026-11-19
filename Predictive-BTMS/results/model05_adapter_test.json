@@ -1,0 +1,67 @@
+{
+  "adapter": "MODEL_05_ADAPTER",
+  "adapter_version": "1.0.0",
+  "packet_id": "MODEL05_ABNORMAL_SELF_DISCHARGE_TEST_001",
+  "adapter_status": "PASSED_TO_MODEL",
+  "model_evaluated": true,
+  "interface_validation": {
+    "valid": true,
+    "warnings": [],
+    "counts": {
+      "measurements": 0,
+      "estimated_states": 0,
+      "cell_parameters": 0
+    },
+    "enabled_models": [
+      "model_05"
+    ]
+  },
+  "adapter_warnings": [
+    "SOC endpoints must be independent of the current integration being audited; otherwise the charge-loss estimate is circular.",
+    "Healthy self-discharge baseline must be matched to the evaluated cell for chemistry, design, age/SOH, SOC, temperature and rest protocol.",
+    "Excess rest-period charge loss is not mechanism-specific and does not uniquely identify an internal micro-short.",
+    "Terminal-voltage relaxation is descriptive only and is not converted into leakage current or charge loss."
+  ],
+  "model_output": {
+    "model": "MODEL_05_ABNORMAL_SELF_DISCHARGE",
+    "version": "1.0.0-reference",
+    "status": "EXCESS_SELF_DISCHARGE_CANDIDATE_RESOLVED",
+    "interpretation": "Excess rest-period charge loss is positive beyond the approximate 95% uncertainty interval.",
+    "rest_duration_s": 604800.0,
+    "mean_cell_temperature_C": 25.1,
+    "temperature_span_C": 0.1999999999999993,
+    "maximum_external_current_magnitude_A": 0.0,
+    "observed_soc_loss_pct_points": 0.12000000000000455,
+    "observed_charge_loss_Ah": 0.0027600000000001044,
+    "observed_charge_loss_sigma_Ah": 0.00016439586369492403,
+    "integrated_external_charge_Ah": 0.0,
+    "integrated_external_charge_sigma_Ah": 8.4e-06,
+    "healthy_baseline_charge_loss_Ah": 0.0008400000000000001,
+    "healthy_baseline_charge_loss_sigma_Ah": 0.000168,
+    "excess_charge_loss_Ah": 0.0019200000000001043,
+    "excess_charge_loss_95pct_interval_Ah": [
+      0.0014590016667102754,
+      0.0023809983332899335
+    ],
+    "observed_loss_current_A": 1.642857142857205e-05,
+    "external_current_average_A": 0.0,
+    "healthy_baseline_current_A": 5e-06,
+    "excess_loss_current_A": 1.1428571428572049e-05,
+    "excess_loss_current_sigma_A": 1.4000192337519098e-06,
+    "terminal_voltage_change_V_descriptive_only": -0.0040000000000000036,
+    "identifiability": "Excess charge loss is not mechanism-specific; it cannot uniquely distinguish micro-short, parasitic reactions, internal leakage or redox shuttle.",
+    "input_integrity_warnings": [
+      "SOC endpoints must be independent of the current integration used for this audit.",
+      "Healthy baseline must be matched for chemistry, cell design, age/SOH, SOC, temperature and rest protocol.",
+      "External current must include all connected loads and measurement offsets."
+    ],
+    "limitations": [
+      "Voltage relaxation is not converted into leakage current or charge loss.",
+      "No unique physical mechanism is inferred from excess rest-period loss.",
+      "SOC bias, capacity uncertainty and baseline mismatch can dominate small self-discharge signals.",
+      "Uncertainty propagation assumes independent inputs and does not represent systematic/correlated errors.",
+      "No local heat or hotspot estimate is made because the responsible mechanism and location are unidentified."
+    ]
+  },
+  "note": "Native Model 05 payload passed unchanged. Excess rest-period charge loss is evaluated relative to the supplied matched healthy baseline."
+}

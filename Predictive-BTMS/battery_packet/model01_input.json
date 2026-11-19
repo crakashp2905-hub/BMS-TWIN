@@ -1,0 +1,45 @@
+{
+  "cell_id": "LFP_001",
+  "chemistry": "LFP_GRAPHITE",
+  "context": {
+    "evaluation_timestamp_s": 1794250000
+  },
+  "parameters": {},
+  "signals": {
+    "cell_voltage_v": {
+      "value": 3.31,
+      "unit": "V",
+      "timestamp_s": 1794250000,
+      "source": "BMS",
+      "quality": "GOOD"
+    },
+    "cell_current_a": {
+      "value": 0.0,
+      "unit": "A",
+      "timestamp_s": 1794250000,
+      "source": "BMS",
+      "quality": "GOOD"
+    },
+    "cell_temperature_k": {
+      "value": 298.15,
+      "unit": "K",
+      "timestamp_s": 1794250000,
+      "source": "Temperature_Sensor",
+      "quality": "GOOD"
+    },
+    "soc_percent": {
+      "value": 65.0,
+      "unit": "%",
+      "timestamp_s": 1794250000,
+      "source": "BMS_Estimator",
+      "quality": "GOOD"
+    },
+    "soh_percent": {
+      "value": 98.5,
+      "unit": "%",
+      "timestamp_s": 1794250000,
+      "source": "BMS_Estimator",
+      "quality": "GOOD"
+    }
+  }
+}

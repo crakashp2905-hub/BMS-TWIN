@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "packet_id": "MODEL04_ELECTROLYTE_DECOMPOSITION_TEST_001",
+  "cell": {
+    "cell_id": "SYNTHETIC-LFP-001",
+    "chemistry": "LFP_GRAPHITE"
+  },
+  "acquisition": {
+    "session_id": "MODEL04-SYNTHETIC-TEST-001",
+    "started_at_utc": "2026-11-13T12:00:00Z"
+  },
+  "measurements": [],
+  "estimated_states": [],
+  "cell_parameters": [],
+  "model_evidence": {
+    "model_04": {
+      "enabled": true,
+      "provenance": {
+        "source": "SYNTHETIC_TEST_FIXTURE",
+        "acquisition_method": "CONTROLLED_SOFTWARE_TEST",
+        "timestamp_utc": "2026-11-13T12:00:00Z",
+        "quality": "GOOD",
+        "notes": "Synthetic parameterised electrolyte-decomposition adapter integration test."
+      },
+      "payload": {
+        "model": "electrolyte_decomposition",
+        "parameters": {
+          "initial_concentration_mol_m3": 1000.0,
+          "electrolyte_volume_m3": 1e-05,
+          "rate_constant_ref_s": 1e-09,
+          "activation_energy_J_mol": 45000.0,
+          "reference_temperature_K": 298.15,
+          "transfer_coefficient": 0.35,
+          "electron_number": 1.0,
+          "reaction_enthalpy_J_mol": 25000.0
+        },
+        "samples": [
+          {
+            "time_s": 0,
+            "temperature_K": 298.15,
+            "decomposition_overpotential_V": 0.05,
+            "quality": "GOOD"
+          },
+          {
+            "time_s": 3600,
+            "temperature_K": 303.15,
+            "decomposition_overpotential_V": 0.08,
+            "quality": "GOOD"
+          },
+          {
+            "time_s": 7200,
+            "temperature_K": 308.15,
+            "decomposition_overpotential_V": 0.1,
+            "quality": "GOOD"
+          },
+          {
+            "time_s": 10800,
+            "temperature_K": 303.15,
+            "decomposition_overpotential_V": 0.06,
+            "quality": "GOOD"
+          }
+        ]
+      }
+    }
+  }
+}

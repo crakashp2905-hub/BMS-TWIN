@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+"""Predictive-BTMS Model 02 Lithium Plating Adapter v1.0."""
+from __future__ import annotations
+import argparse
+import importlib.util
+import json
+import math
+import sys
+from pathlib import Path
+
+def load_module(path: Path, name: str):
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load module: {path}")
+    module = importlib.util.module_from_spec(spec)
+    # Register before execution; required by dataclasses on Python 3.13.
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        sys.modules.pop(spec.name, None)
+        raise
+    return module
+
+def finite(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(float(x))
+
+def validate_payload(payload, provenance):
+    errors, warnings = [], []
+    if not isinstance(payload, dict):
+        return False, ["model_02.payload must be an object"], warnings
+    if not isinstance(provenance, dict) or str(provenance.get("quality", "")).upper() != "GOOD":
+        errors.append("model_02.provenance.quality must be GOOD")
+    if payload.get("model") != "lithium_plating":
+        errors.append("payload.model must equal 'lithium_plating'")
+    samples = payload.get("samples")
+    if not isinstance(samples, list) or not samples:
+        errors.append("payload.samples must be a non-empty list")
+        samples = []
+    anode_count = 0
+    for i, s in enumerate(samples):
+        if not isinstance(s, dict):
+            errors.append(f"samples[{i}] must be an object")
+            continue
+        if not finite(s.get("time_s")):
+            errors.append(f"samples[{i}].time_s must be finite numeric")
+        if not finite(s.get("current_A")):
+            errors.append(f"samples[{i}].current_A must be finite numeric")
+        elif float(s["current_A"]) > 0 and str(s.get("quality", "GOOD")).upper() in {"GOOD", "VALID", "OK"}:
+            if finite(s.get("anode_potential_V")):
+                sigma = s.get("anode_potential_sigma_V", 0.0)
+                if finite(sigma) and float(sigma) >= 0:
+                    anode_count += 1
+    if anode_count == 0:
+        warnings.append("No usable charging samples with anode_potential_V; direct plating assessment will be INSUFFICIENT_DATA.")
+    config = payload.get("config", {})
+    if config is not None and not isinstance(config, dict):
+        errors.append("payload.config must be an object")
+    if not isinstance(payload.get("stripping", {}), dict):
+        errors.append("payload.stripping must be an object when supplied")
+    if "stripping" not in payload:
+        warnings.append("No paired stripping traces supplied; stripping feature will not be evaluated.")
+    return not errors, errors, warnings
+
+def main():
+    p = argparse.ArgumentParser(description="Model 02 Lithium Plating Adapter")
+    p.add_argument("--input", required=True, type=Path)
+    p.add_argument("--model", required=True, type=Path)
+    p.add_argument("--output", required=True, type=Path)
+    a = p.parse_args()
+    packet = json.loads(a.input.read_text(encoding="utf-8"))
+    interface_path = Path(__file__).with_name("Unified_Data_Interface_v1.py")
+    interface = load_module(interface_path, "unified_data_interface_for_model02")
+    interface_report = interface.validate_packet(packet)
+    block = packet.get("model_evidence", {}).get("model_02", {})
+    if not isinstance(block, dict) or block.get("enabled") is not True:
+        result = {
+            "adapter": "MODEL_02_ADAPTER", "adapter_version": "1.0.0",
+            "packet_id": packet.get("packet_id"),
+            "adapter_status": "INSUFFICIENT_DATA",
+            "reason": "model_evidence.model_02 is not enabled",
+            "model_evaluated": False
+        }
+    else:
+        payload = block.get("payload")
+        ok, errors, warnings = validate_payload(payload, block.get("provenance"))
+        if not ok:
+            result = {
+                "adapter": "MODEL_02_ADAPTER", "adapter_version": "1.0.0",
+                "packet_id": packet.get("packet_id"),
+                "adapter_status": "INVALID_OR_INCOMPLETE_PAYLOAD",
+                "errors": errors, "warnings": warnings,
+                "model_evaluated": False
+            }
+        else:
+            model = load_module(a.model, "frozen_model02_lithium_plating")
+            output = model.evaluate(payload)
+            result = {
+                "adapter": "MODEL_02_ADAPTER", "adapter_version": "1.0.0",
+                "packet_id": packet.get("packet_id"),
+                "adapter_status": "PASSED_TO_MODEL", "model_evaluated": True,
+                "interface_validation": interface_report,
+                "adapter_warnings": warnings,
+                "model_output": output,
+                "note": "Native Model 02 payload passed unchanged. Anode potential must be independently measured or generated by a validated electrochemical observer; terminal voltage is not a substitute."
+            }
+    a.output.parent.mkdir(parents=True, exist_ok=True)
+    a.output.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    print(json.dumps(result, indent=2, allow_nan=False))
+
+if __name__ == "__main__":
+    main()

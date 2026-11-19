@@ -1,0 +1,70 @@
+{
+  "model": "lithium_plating",
+  "samples": [
+    {
+      "time_s": 0,
+      "current_A": 2.3,
+      "temperature_C": 8.0,
+      "soc_pct": 88.0,
+      "capacity_Ah": 2.3,
+      "anode_potential_V": 0.025,
+      "anode_potential_sigma_V": 0.004,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 10,
+      "current_A": 2.3,
+      "temperature_C": 8.0,
+      "soc_pct": 88.2,
+      "capacity_Ah": 2.3,
+      "anode_potential_V": 0.019,
+      "anode_potential_sigma_V": 0.004,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 20,
+      "current_A": 2.3,
+      "temperature_C": 8.0,
+      "soc_pct": 88.4,
+      "capacity_Ah": 2.3,
+      "anode_potential_V": 0.013,
+      "anode_potential_sigma_V": 0.004,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 30,
+      "current_A": 2.3,
+      "temperature_C": 8.0,
+      "soc_pct": 88.6,
+      "capacity_Ah": 2.3,
+      "anode_potential_V": 0.008,
+      "anode_potential_sigma_V": 0.004,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 40,
+      "current_A": 2.3,
+      "temperature_C": 8.0,
+      "soc_pct": 88.8,
+      "capacity_Ah": 2.3,
+      "anode_potential_V": 0.003,
+      "anode_potential_sigma_V": 0.004,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 50,
+      "current_A": 2.3,
+      "temperature_C": 8.0,
+      "soc_pct": 89.0,
+      "capacity_Ah": 2.3,
+      "anode_potential_V": -0.002,
+      "anode_potential_sigma_V": 0.004,
+      "quality": "GOOD"
+    }
+  ],
+  "config": {
+    "plating_threshold_V": 0.0,
+    "near_threshold_margin_V": 0.02,
+    "minimum_valid_samples": 3
+  }
+}

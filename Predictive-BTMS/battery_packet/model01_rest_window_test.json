@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0.0",
+  "packet_id": "MODEL01_REST_WINDOW_TEST_001",
+
+  "cell": {
+    "cell_id": "SYNTHETIC_LFP_001",
+    "chemistry": "LFP_GRAPHITE",
+    "manufacturer": "SYNTHETIC",
+    "model": "TEST_CELL",
+    "nominal_capacity_Ah": 2.3
+  },
+
+  "acquisition": {
+    "session_id": "MODEL01_REST_TEST",
+    "started_at_utc": "2026-11-13T00:00:00Z",
+    "ended_at_utc": "2026-11-20T00:00:00Z",
+    "sampling_description": "Synthetic seven-day rest-window test"
+  },
+
+  "measurements": [
+    {
+      "name": "cell_voltage",
+      "value": 3.30,
+      "unit": "V",
+      "timestamp_utc": "2026-11-13T00:00:00Z",
+      "source": {
+        "type": "SIMULATION",
+        "id": "SYNTHETIC_VOLTAGE"
+      },
+      "quality": "GOOD",
+      "sigma": 0.001,
+      "uncertainty_method": "Synthetic test uncertainty"
+    },
+    {
+      "name": "cell_current",
+      "value": 0.0,
+      "unit": "A",
+      "timestamp_utc": "2026-11-13T00:00:00Z",
+      "source": {
+        "type": "SIMULATION",
+        "id": "SYNTHETIC_CURRENT"
+      },
+      "quality": "GOOD",
+      "sigma": 0.0001,
+      "uncertainty_method": "Synthetic test uncertainty"
+    },
+    {
+      "name": "cell_temperature",
+      "value": 298.15,
+      "unit": "K",
+      "timestamp_utc": "2026-11-13T00:00:00Z",
+      "source": {
+        "type": "SIMULATION",
+        "id": "SYNTHETIC_TEMPERATURE"
+      },
+      "quality": "GOOD",
+      "sigma": 0.1,
+      "uncertainty_method": "Synthetic test uncertainty"
+    }
+  ],
+
+  "estimated_states": [],
+
+  "cell_parameters": [],
+
+  "model_evidence": {
+    "model_01": {
+      "enabled": true,
+
+      "provenance": {
+        "source": "SYNTHETIC_TEST_FIXTURE",
+        "acquisition_method": "CONTROLLED_SOFTWARE_TEST",
+        "timestamp_utc": "2026-11-13T00:00:00Z",
+        "quality": "GOOD",
+        "notes": "Synthetic values for software testing only"
+      },
+
+      "payload": {
+
+        "direct_path": null,
+
+        "rest_window": {
+
+          "samples": [
+            {
+              "timestamp_s": 0,
+              "soc_independent_percent": 70.0,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.3000,
+              "quality": "GOOD"
+            },
+            {
+              "timestamp_s": 86400,
+              "soc_independent_percent": 69.98286,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.2994,
+              "quality": "GOOD"
+            },
+            {
+              "timestamp_s": 172800,
+              "soc_independent_percent": 69.96571,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.2989,
+              "quality": "GOOD"
+            },
+            {
+              "timestamp_s": 259200,
+              "soc_independent_percent": 69.94857,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.2983,
+              "quality": "GOOD"
+            },
+            {
+              "timestamp_s": 345600,
+              "soc_independent_percent": 69.93143,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.2977,
+              "quality": "GOOD"
+            },
+            {
+              "timestamp_s": 432000,
+              "soc_independent_percent": 69.91429,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.2971,
+              "quality": "GOOD"
+            },
+            {
+              "timestamp_s": 518400,
+              "soc_independent_percent": 69.89714,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.2965,
+              "quality": "GOOD"
+            },
+            {
+              "timestamp_s": 604800,
+              "soc_independent_percent": 69.88,
+              "soc_sigma_percent": 0.01,
+              "external_current_a": 0.0,
+              "temperature_k": 298.15,
+              "cell_voltage_v": 3.2960,
+              "quality": "GOOD"
+            }
+          ],
+
+          "capacity_ah": 2.3,
+          "capacity_sigma_ah": 0.02,
+
+          "healthy_baseline_self_discharge_a": 0.000005,
+          "healthy_baseline_self_discharge_sigma_a": 0.000001,
+
+          "minimum_rest_duration_s": 604800,
+          "maximum_abs_external_current_a": 0.001,
+          "maximum_temperature_span_k": 0.5
+        }
+      }
+    },
+
+    "model_02": {
+      "enabled": false,
+      "payload": null
+    },
+
+    "model_03": {
+      "enabled": false,
+      "payload": null
+    },
+
+    "model_04": {
+      "enabled": false,
+      "payload": null
+    },
+
+    "model_05": {
+      "enabled": false,
+      "payload": null
+    },
+
+    "model_06": {
+      "enabled": false,
+      "payload": null
+    }
+  },
+
+  "notes": [
+    "Synthetic software test data.",
+    "Not experimental battery measurements.",
+    "Independent SOC is assumed for this controlled test fixture."
+  ]
+}

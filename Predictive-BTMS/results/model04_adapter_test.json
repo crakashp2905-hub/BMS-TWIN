@@ -1,0 +1,88 @@
+{
+  "adapter": "MODEL_04_ADAPTER",
+  "adapter_version": "1.0.0",
+  "packet_id": "MODEL04_ELECTROLYTE_DECOMPOSITION_TEST_001",
+  "adapter_status": "PASSED_TO_MODEL",
+  "model_evaluated": true,
+  "interface_validation": {
+    "valid": true,
+    "warnings": [],
+    "counts": {
+      "measurements": 0,
+      "estimated_states": 0,
+      "cell_parameters": 0
+    },
+    "enabled_models": [
+      "model_04"
+    ]
+  },
+  "adapter_warnings": [
+    "Model 04 is a conditional parameterised estimate for one calibrated decomposition pathway; it does not independently detect decomposition.",
+    "decomposition_overpotential_V must use the calibrated reaction-driving sign/reference convention and must not be substituted with terminal cell voltage.",
+    "Reaction heat is signed; positive indicates heat release and negative indicates heat absorption. Check the baseline heat ledger before aggregation."
+  ],
+  "model_output": {
+    "model": "MODEL_04_ELECTROLYTE_DECOMPOSITION",
+    "version": "1.0.0-reference",
+    "status": "CONDITIONAL_PARAMETERISED_ESTIMATE",
+    "time_window_s": 10800.0,
+    "valid_samples": 4,
+    "kinetic_model": "first-order electrolyte consumption with Arrhenius and calibrated potential acceleration",
+    "initial_electrolyte_concentration_mol_m3": 1000.0,
+    "estimated_final_electrolyte_concentration_mol_m3": 999.9550706734192,
+    "initial_electrolyte_amount_mol": 0.01,
+    "estimated_electrolyte_consumed_mol": 4.4929326580844806e-07,
+    "estimated_electrolyte_consumed_fraction_pct": 0.004492932658084481,
+    "estimated_electron_equivalent_parasitic_charge_Ah": 1.2041724991890986e-05,
+    "reaction_enthalpy_J_mol": 25000.0,
+    "estimated_reaction_heat_J": 0.011232331645211202,
+    "heat_interpretation": "Positive reaction heat means heat release; negative means heat absorption.",
+    "interval_details": [
+      {
+        "start_time_s": 0.0,
+        "end_time_s": 3600.0,
+        "duration_s": 3600.0,
+        "mean_temperature_K": 300.65,
+        "mean_decomposition_overpotential_V": 0.065,
+        "rate_constant_s": 2.7984144023175692e-09,
+        "fraction_electrolyte_consumed_in_interval": 1.0074241102886461e-05,
+        "electrolyte_consumed_mol": 1.007424110288646e-07
+      },
+      {
+        "start_time_s": 3600.0,
+        "end_time_s": 7200.0,
+        "duration_s": 3600.0,
+        "mean_temperature_K": 305.65,
+        "mean_decomposition_overpotential_V": 0.09,
+        "rate_constant_s": 5.162296833735006e-09,
+        "fraction_electrolyte_consumed_in_interval": 1.8583908694358442e-05,
+        "electrolyte_consumed_mol": 1.8583908694358443e-07
+      },
+      {
+        "start_time_s": 7200.0,
+        "end_time_s": 10800.0,
+        "duration_s": 3600.0,
+        "mean_temperature_K": 305.65,
+        "mean_decomposition_overpotential_V": 0.08,
+        "rate_constant_s": 4.519937634294196e-09,
+        "fraction_electrolyte_consumed_in_interval": 1.6271176783599905e-05,
+        "electrolyte_consumed_mol": 1.6271176783599906e-07
+      }
+    ],
+    "interpretation": "Conditional estimate for the specified calibrated decomposition pathway; not an independently detected electrolyte-decomposition event.",
+    "required_validation": [
+      "Identify the specific decomposition pathway and define its overpotential sign/reference convention.",
+      "Calibrate rate_constant_ref_s, activation_energy_J_mol and transfer_coefficient for the target cell and pathway.",
+      "Validate electron_number and reaction_enthalpy_J_mol against reaction stoichiometry and calorimetry.",
+      "Validate electrolyte volume and initial concentration for the actual cell."
+    ],
+    "limitations": [
+      "A single lumped pathway cannot represent the full coupled electrolyte, SEI and CEI reaction network.",
+      "The estimated electron-equivalent charge is pathway-specific and is not automatically equal to measured capacity fade.",
+      "The model does not predict gas composition, gas pressure, swelling or local depletion.",
+      "Temperature and overpotential inputs must be valid, synchronised and traceable.",
+      "Do not add reaction heat to baseline heat unless the baseline model excludes this parasitic reaction."
+    ]
+  },
+  "note": "Native Model 04 payload passed unchanged. Estimates are conditional on the specified calibrated reaction pathway, kinetic parameters and overpotential convention."
+}

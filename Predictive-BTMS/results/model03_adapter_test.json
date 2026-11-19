@@ -1,0 +1,80 @@
+{
+  "adapter": "MODEL_03_ADAPTER",
+  "adapter_version": "1.0.0",
+  "packet_id": "MODEL03_SEI_GROWTH_TEST_001",
+  "adapter_status": "PASSED_TO_MODEL",
+  "model_evaluated": true,
+  "interface_validation": {
+    "valid": true,
+    "warnings": [],
+    "counts": {
+      "measurements": 0,
+      "estimated_states": 0,
+      "cell_parameters": 0
+    },
+    "enabled_models": [
+      "model_03"
+    ]
+  },
+  "adapter_warnings": [
+    "Model 03 produces a conditional parameterised SEI-growth estimate; it does not independently detect an SEI event."
+  ],
+  "model_output": {
+    "model": "MODEL_03_SEI_GROWTH",
+    "version": "1.0.0-reference",
+    "status": "CONDITIONAL_PARAMETERISED_ESTIMATE",
+    "time_window_s": 10800.0,
+    "valid_samples": 4,
+    "growth_model": "temperature-dependent diffusion-limited parabolic law",
+    "initial_sei_thickness_m": 2e-08,
+    "estimated_final_sei_thickness_m": 2.0141792384393685e-08,
+    "estimated_sei_thickness_growth_m": 1.4179238439368484e-10,
+    "estimated_sei_thickness_growth_nm": 0.14179238439368483,
+    "initial_sei_resistance_ohm": 0.11111111111111112,
+    "estimated_final_sei_resistance_ohm": 0.11189884657996492,
+    "estimated_incremental_sei_resistance_ohm": 0.0007877354688538007,
+    "estimated_lithium_inventory_loss_Ah": 0.005104525838172654,
+    "estimated_capacity_fraction_loss_pct": 0.22193590600750673,
+    "estimated_incremental_sei_ohmic_heat_J": 3.5487260679274355,
+    "interval_details": [
+      {
+        "start_time_s": 0.0,
+        "end_time_s": 3600.0,
+        "duration_s": 3600.0,
+        "mean_temperature_K": 300.65,
+        "parabolic_rate_m2_s": 2.249144262341569e-22,
+        "delta_thickness_squared_m2": 1.6193838688859297e-18
+      },
+      {
+        "start_time_s": 3600.0,
+        "end_time_s": 7200.0,
+        "duration_s": 3600.0,
+        "mean_temperature_K": 305.65,
+        "parabolic_rate_m2_s": 2.82806707439827e-22,
+        "delta_thickness_squared_m2": 2.0362082935667546e-18
+      },
+      {
+        "start_time_s": 7200.0,
+        "end_time_s": 10800.0,
+        "duration_s": 3600.0,
+        "mean_temperature_K": 305.65,
+        "parabolic_rate_m2_s": 2.82806707439827e-22,
+        "delta_thickness_squared_m2": 2.0362082935667546e-18
+      }
+    ],
+    "interpretation": "Conditional model estimate from supplied calibrated parameters and temperature history. It is not an independently detected SEI event.",
+    "required_validation": [
+      "Calibrate parabolic_rate_ref_m2_s and activation_energy_J_mol for the target chemistry, cell design and ageing regime.",
+      "Validate initial thickness, effective SEI conductivity and capacity-per-volume mapping using independent characterisation.",
+      "Compare predicted thickness/capacity loss/resistance growth against suitable reference measurements across temperature and ageing conditions."
+    ],
+    "limitations": [
+      "The parabolic law is a reduced-order approximation; real SEI growth may include reaction-limited, solvent-diffusion-limited and stress-coupled regimes.",
+      "No anode-potential dependence, electrolyte depletion, changing porosity, cracking or SEI repair is represented.",
+      "Capacity loss is a parameterised mapping from added SEI volume, not a direct electrochemical lithium balance.",
+      "Incremental I^2*Delta_R heat is not total SEI reaction heat and must not be double-counted with baseline ohmic heat.",
+      "Cell-average resistance/heat does not predict local hotspots."
+    ]
+  },
+  "note": "Native Model 03 payload passed unchanged. Results are conditional on the supplied calibrated SEI parameters and temperature history."
+}

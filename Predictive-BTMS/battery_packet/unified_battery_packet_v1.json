@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "cell": {
+    "cell_id": "LFP_EXAMPLE_001",
+    "chemistry": "LFP_GRAPHITE"
+  },
+  "context": {
+    "evaluation_timestamp_utc": "2026-11-10T00:00:00Z",
+    "data_provenance": "synthetic integration test packet"
+  },
+  "model_inputs": {}
+}

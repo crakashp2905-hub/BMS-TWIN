@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "packet_id": "MODEL01_DIRECT_PATH_SYNTHETIC_TEST_001",
+  "cell": {
+    "cell_id": "CELL_PLACEHOLDER_001",
+    "chemistry": "LFP_GRAPHITE",
+    "manufacturer": "UNKNOWN",
+    "model": "UNKNOWN",
+    "nominal_capacity_Ah": null
+  },
+  "acquisition": {
+    "session_id": "SESSION_DEMO_001",
+    "started_at_utc": "2026-11-10T00:00:00Z",
+    "ended_at_utc": null,
+    "sampling_description": "Replace with actual acquisition details"
+  },
+  "measurements": [
+    {
+      "name": "cell_voltage",
+      "value": 3.3,
+      "unit": "V",
+      "timestamp_utc": "2026-11-10T00:00:00Z",
+      "source": {
+        "type": "SENSOR",
+        "id": "CELL_VOLTAGE_CHANNEL_01"
+      },
+      "quality": "GOOD",
+      "sigma": 0.005,
+      "uncertainty_method": "sensor datasheet / calibration"
+    },
+    {
+      "name": "cell_current",
+      "value": 0.0,
+      "unit": "A",
+      "timestamp_utc": "2026-11-10T00:00:00Z",
+      "source": {
+        "type": "SENSOR",
+        "id": "PACK_CURRENT_CHANNEL_01"
+      },
+      "quality": "GOOD",
+      "sigma": 0.02,
+      "uncertainty_method": "sensor datasheet / calibration"
+    },
+    {
+      "name": "cell_temperature",
+      "value": 298.15,
+      "unit": "K",
+      "timestamp_utc": "2026-11-10T00:00:00Z",
+      "source": {
+        "type": "SENSOR",
+        "id": "CELL_TEMP_CHANNEL_01"
+      },
+      "quality": "GOOD",
+      "sigma": 0.5,
+      "uncertainty_method": "sensor datasheet / calibration"
+    }
+  ],
+  "estimated_states": [
+    {
+      "name": "soc_pct",
+      "value": 70.0,
+      "unit": "percent",
+      "timestamp_utc": "2026-11-10T00:00:00Z",
+      "source": {
+        "type": "ESTIMATOR",
+        "id": "BMS_SOC_ESTIMATOR"
+      },
+      "quality": "GOOD",
+      "sigma": 1.0,
+      "uncertainty_method": "estimator validation",
+      "estimator": "BMS coulomb-counting + correction",
+      "independent_of_current_integration": false
+    }
+  ],
+  "cell_parameters": [
+    {
+      "name": "nominal_capacity",
+      "value": 2.3,
+      "unit": "Ah",
+      "timestamp_utc": "2026-11-10T00:00:00Z",
+      "source": {
+        "type": "UNKNOWN",
+        "id": "PLACEHOLDER_NOT_CELL_DATASHEET"
+      },
+      "quality": "UNKNOWN",
+      "parameter_status": "PROVISIONAL",
+      "sigma": null
+    }
+  ],
+  "model_evidence": {
+    "model_01": {
+      "enabled": true,
+      "provenance": {
+        "source": "SYNTHETIC_TEST_FIXTURE",
+        "acquisition_method": "CONTROLLED_SOFTWARE_TEST",
+        "timestamp_utc": "2026-11-13T12:45:00Z",
+        "quality": "GOOD",
+        "notes": "Synthetic values for adapter-to-model execution testing only; not battery measurements."
+      },
+      "payload": {
+        "direct_path": {
+          "path_voltage_v": 0.2,
+          "path_voltage_sigma_v": 0.001,
+          "path_current_a": 0.01,
+          "path_current_sigma_a": 0.0001,
+          "duration_s": 10.0,
+          "quality": "GOOD"
+        },
+        "rest_window": null
+      }
+    },
+    "model_02": {
+      "enabled": false,
+      "payload": null,
+      "provenance": {
+        "notes": "Requires plating-specific evidence; ordinary BMS signals alone are insufficient for quantitative plating."
+      }
+    },
+    "model_03": {
+      "enabled": false,
+      "payload": null,
+      "provenance": {
+        "notes": "Requires validated SEI kinetic and cell-specific parameters."
+      }
+    },
+    "model_04": {
+      "enabled": false,
+      "payload": null,
+      "provenance": {
+        "notes": "Requires validated electrolyte reaction parameters and overpotential evidence."
+      }
+    },
+    "model_05": {
+      "enabled": false,
+      "payload": null,
+      "provenance": {
+        "notes": "Requires independent SOC endpoints, external current audit and matched healthy baseline."
+      }
+    },
+    "model_06": {
+      "enabled": false,
+      "payload": null,
+      "provenance": {
+        "notes": "Requires voltage drop measured across the identified contact and current through that same path."
+      }
+    }
+  },
+  "notes": [
+    "Template only: replace placeholders with acquired/validated data.",
+    "Do not change UNKNOWN/SUSPECT values to GOOD to force evaluation.",
+    "No automatic unit conversion or model inference occurs in interface v1.0."
+  ]
+}

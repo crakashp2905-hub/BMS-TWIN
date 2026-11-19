@@ -1,0 +1,39 @@
+{
+  "model": "electrolyte_decomposition",
+  "parameters": {
+    "initial_concentration_mol_m3": 1000.0,
+    "electrolyte_volume_m3": 1e-05,
+    "rate_constant_ref_s": 1e-09,
+    "activation_energy_J_mol": 45000.0,
+    "reference_temperature_K": 298.15,
+    "transfer_coefficient": 0.35,
+    "electron_number": 1.0,
+    "reaction_enthalpy_J_mol": 25000.0
+  },
+  "samples": [
+    {
+      "time_s": 0,
+      "temperature_K": 298.15,
+      "decomposition_overpotential_V": 0.05,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 3600,
+      "temperature_K": 303.15,
+      "decomposition_overpotential_V": 0.08,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 7200,
+      "temperature_K": 308.15,
+      "decomposition_overpotential_V": 0.1,
+      "quality": "GOOD"
+    },
+    {
+      "time_s": 10800,
+      "temperature_K": 303.15,
+      "decomposition_overpotential_V": 0.06,
+      "quality": "GOOD"
+    }
+  ]
+}

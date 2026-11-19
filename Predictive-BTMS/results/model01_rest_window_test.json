@@ -1,0 +1,120 @@
+{
+  "adapter": "MODEL_01_ADAPTER",
+  "adapter_version": "1.0.0",
+  "packet_id": "MODEL01_REST_WINDOW_TEST_001",
+  "adapter_status": "PASSED_TO_MODEL",
+  "model_evaluated": true,
+  "interface_validation": {
+    "valid": true,
+    "warnings": [],
+    "counts": {
+      "measurements": 3,
+      "estimated_states": 0,
+      "cell_parameters": 0
+    },
+    "enabled_models": [
+      "model_01"
+    ]
+  },
+  "model_output": {
+    "model_id": "INTERNAL_MICRO_SHORT",
+    "model_version": "1.0.0-final-reference",
+    "overall_status": "COMPLETED",
+    "assessments": {
+      "direct_path_assessment": {
+        "model_id": "INTERNAL_MICRO_SHORT",
+        "model_version": "1.0.0-final-reference",
+        "status": "INSUFFICIENT_DATA",
+        "conclusion": "NO_MICRO_SHORT_DIAGNOSIS",
+        "identifiability": "NOT_IDENTIFIABLE",
+        "findings": [
+          "No direct-path measurement block supplied."
+        ],
+        "calculated": {},
+        "uncertainty": {},
+        "heat": {
+          "status": "UNAVAILABLE"
+        },
+        "required_evidence": [
+          "direct_path.path_voltage_v",
+          "direct_path.path_current_a",
+          "direct_path.path_voltage_sigma_v",
+          "direct_path.path_current_sigma_a"
+        ],
+        "limitations": [
+          "Ordinary terminal voltage/current/temperature/SOC/SOH alone do not uniquely identify a local internal micro-short.",
+          "No missing quantity is silently replaced with zero."
+        ]
+      },
+      "indirect_rest_assessment": {
+        "model_id": "INTERNAL_MICRO_SHORT",
+        "model_version": "1.0.0-final-reference",
+        "status": "EVALUATED",
+        "conclusion": "EXCESS_SELF_DISCHARGE_OR_INTERNAL_LEAKAGE_CANDIDATE",
+        "identifiability": "EXCESS_CHARGE_LOSS_RATE_IDENTIFIABLE; PHYSICAL_MECHANISM_NOT_UNIQUE",
+        "findings": [
+          "Excess charge-loss rate is resolved above the supplied healthy baseline under the stated assumptions.",
+          "This is not unique evidence of a local micro-short; other parasitic reactions or leakage paths remain possible."
+        ],
+        "calculated": {
+          "rest_duration_s": 604800.0,
+          "start_soc_percent": 70.0,
+          "end_soc_percent": 69.88,
+          "soc_drop_percentage_points": 0.12000000000000455,
+          "observed_charge_loss_ah": 0.0027600000000001044,
+          "healthy_baseline_charge_loss_ah": 0.00084,
+          "excess_charge_loss_ah": 0.0019200000000001043,
+          "observed_mean_loss_current_a": 1.642857142857205e-05,
+          "healthy_baseline_self_discharge_a": 5e-06,
+          "excess_loss_current_point_estimate_a": 1.1428571428572049e-05,
+          "maximum_abs_external_current_a": 0.0,
+          "temperature_span_k": 0.0,
+          "mean_cell_voltage_v": 3.2979875,
+          "voltage_change_v_descriptive_only": -0.0040000000000000036
+        },
+        "uncertainty": {
+          "observed_charge_loss_standard_uncertainty_ah": 0.0003261533381708672,
+          "observed_mean_loss_current_standard_uncertainty_a": 1.9413889176837336e-06,
+          "excess_loss_current_standard_uncertainty_a": 2.1838019437909697e-06,
+          "approx_95_percent_excess_current_interval_a": [
+            7.148319618741749e-06,
+            1.570882323840235e-05
+          ],
+          "propagation": "First-order independent uncertainty propagation; approximate 95% interval."
+        },
+        "heat": {
+          "status": "EQUIVALENT_TERMINAL_SHUNT_DISSIPATION_ONLY",
+          "equivalent_power_w": 3.769128571428776e-05,
+          "equivalent_energy_j": 22.79568960000124,
+          "assumption": "P_eq = mean terminal voltage * excess leakage-equivalent current. This is a lumped equivalent energy estimate, not proof that all energy is deposited at a local micro-short site."
+        },
+        "required_evidence": [
+          "samples[].timestamp_s",
+          "samples[].soc_independent_percent and soc_sigma_percent",
+          "capacity_ah and capacity_sigma_ah",
+          "healthy_baseline_self_discharge_a and its standard uncertainty",
+          "minimum_rest_duration_s",
+          "maximum_abs_external_current_a",
+          "maximum_temperature_span_k"
+        ],
+        "limitations": [
+          "SOC endpoints must be independent of the current integration being assessed; otherwise the result is circular.",
+          "Capacity must represent validated usable capacity at the test condition.",
+          "Healthy baseline self-discharge must be measured on a matched cell/protocol and corrected for temperature and age.",
+          "The excess charge-loss rate is not uniquely attributable to a micro-short.",
+          "Voltage change is descriptive only; relaxation is not converted into leakage current.",
+          "Equivalent terminal-shunt power is not local hotspot heat or cell temperature rise.",
+          "Approximate uncertainty assumes independent input errors and does not include unmodelled systematic bias."
+        ]
+      }
+    },
+    "global_limitations": [
+      "This model assesses directly observed path dissipation and/or excess rest-period charge loss.",
+      "Neither route alone uniquely confirms a local internal micro-short.",
+      "No diagnosis is made from ordinary BMS voltage/current/temperature/SOC/SOH alone.",
+      "No local hotspot temperature is predicted.",
+      "Research/reference implementation; not safety-certified or experimentally validated for a specific cell."
+    ]
+  },
+  "note": "Explicit model-specific evidence passed to frozen Model 01."
+}
